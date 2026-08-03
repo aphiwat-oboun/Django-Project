@@ -21,8 +21,8 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load environment variables (.env.local or .env file)
-env_file = BASE_DIR / ".env.local" if (BASE_DIR / ".env.local").is_file() else BASE_DIR / ".env"
+# Load environment variables (..env.example or .env file)
+env_file = BASE_DIR / "..env.example" if (BASE_DIR / "..env.example").is_file() else BASE_DIR / ".env"
 if env_file.is_file():
     load_dotenv(env_file)
 else:
