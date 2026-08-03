@@ -14,19 +14,27 @@ import os
 from pathlib import Path
 import dj_database_url
 
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+# Load environment variables (.env.local or .env file)
+env_file = BASE_DIR / ".env.local" if (BASE_DIR / ".env.local").is_file() else BASE_DIR / ".env"
+if env_file.is_file():
+    load_dotenv(env_file)
+else:
+    load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-tgb$tld_9z460nx=zlt#(=$se8y*mmwgddb!5(5nei92t575xk"
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-tgb$tld_9z460nx=zlt#(=$se8y*mmwgddb!5(5nei92t575xk")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "True").lower() in ("true", "1", "t")
+
 
 ALLOWED_HOSTS = [".vercel.app", "127.0.0.1", "localhost", "*"]
 
@@ -79,7 +87,10 @@ WSGI_APPLICATION = "my_web.wsgi.application"
 
 DATABASES = {
     "default": dj_database_url.config(
-        default="postgresql://neondb_owner:npg_Gr0IdPc8TOJA@ep-purple-base-az3lm9c1-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require",
+        default=os.getenv(
+            "DATABASE_URL",
+            "postgresql://neondb_owner:npg_Gr0IdPc8TOJA@ep-purple-base-az3lm9c1-pooler.c-3.ap-southeast-1.aws.neon.tech/neondb?sslmode=require",
+        ),
         conn_max_age=600,
         conn_health_checks=True,
     )
