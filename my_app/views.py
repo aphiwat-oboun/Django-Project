@@ -8,7 +8,7 @@ def home(request):
         "title": "My Home Page",
     }
     
-    context["students"] = Student.objects.all().order_by("stu_id")
+    context["students"] = Student.objects.all().order_by("id")
     context["majors"] = Major.objects.all().order_by("id")
 
     context["date"] = datetime.datetime.today()
