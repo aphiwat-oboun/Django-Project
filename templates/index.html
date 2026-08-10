@@ -14,6 +14,7 @@
         <th scope="col">PREFIX NAME</th>
         <th scope="col">FIRST NAME</th>
         <th scope="col">LAST NAME</th>
+        <th scope="col">MAJOR</th>
       </tr>
     </thead>
   </thead>
@@ -22,10 +23,11 @@
     {% for student in students %}
     <tr>
       <th scope="row">{{ forloop.counter }}</th>
-      <td>{{ student.stu_id }}</td>
+      <td><a href="{% url 'student_detail' pk=student.pk %}">{{ student.stu_id }}</a></td>
       <td>{{ student.get_prefix_name_display }}</td>
       <td>{{ student.fname }}</td>
       <td>{{ student.lname }}</td>
+      <td>{{ student.major }}</td>
     </tr>
     {% endfor %}
   </tbody>

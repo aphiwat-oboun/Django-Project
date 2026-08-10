@@ -1,0 +1,20 @@
+{% extends "base.html" %} {% block content %}
+
+<h1 class="mt-4">{{title}}</h1>
+<ol class="breadcrumb mb-4">
+  <li class="breadcrumb-item active">
+    {{title}} | Date: {{date|date:"F d, Y"}}
+  </li>
+</ol>
+
+<div class="card mb-4">
+  <div class="card-body">
+    <p><strong>Student ID:</strong> {{ student.stu_id }}</p>
+    <p><strong>Name:</strong> {{ student.get_prefix_name_display }} {{ student.fname }} {{ student.lname }}</p>
+    <p><strong>Major:</strong> {{ student.major }}</p>
+  </div>
+</div>
+
+<a href="{% url 'home' %}" class="btn btn-secondary mb-4">Back to Home</a>
+
+{% endblock %}
