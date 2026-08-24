@@ -1,1 +1,1 @@
-"# Django-Project-20-07-2569" 
+# Django-Project-20-07-2569
