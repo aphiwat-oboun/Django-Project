@@ -1,39 +1,55 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Dashboard - SB Admin</title>
-        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+        <meta name="description" content="ระบบจัดการข้อมูลนักศึกษา Student Management System" />
+        <meta name="author" content="Aphiwat Obaun" />
+        <title>{% block title %}{{ title|default:"Student Management System" }}{% endblock %} | ระบบจัดการข้อมูลนักศึกษา</title>
+        
+        <!-- Google Fonts & FontAwesome -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <script src="https://use.fontawesome.com/releases/v6.4.0/js/all.js" crossorigin="anonymous"></script>
+
+        <!-- Base Stylesheet -->
         <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <!-- Custom Modern Design System -->
+        <link href="{% static 'css/custom.css' %}" rel="stylesheet" />
     </head>
     <body class="sb-nav-fixed">
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark">
             <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="{% url 'home' %}">Aphiwat Obaun</a>
+            <a class="navbar-brand ps-3 d-flex align-items-center gap-2" href="{% url 'home' %}">
+                <i class="fa-solid fa-graduation-cap" style="color: #818cf8;"></i>
+                <span>Student Hub</span>
+            </a>
             <!-- Sidebar Toggle-->
-            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0 text-light" id="sidebarToggle" href="#!"><i class="fas fa-bars-staggered"></i></button>
+            
             <!-- Navbar Search-->
-            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" action="{% url 'home' %}" method="get">
                 <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+                    <input class="form-control form-control-sm" type="text" name="q" placeholder="ค้นหารหัสนักศึกษา / ชื่อ..." aria-label="Search" />
+                    <button class="btn btn-primary btn-sm" type="button"><i class="fas fa-search"></i></button>
                 </div>
             </form>
-            <!-- Navbar-->
+            
+            <!-- Navbar Right Items-->
             <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#!">Settings</a></li>
-                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                    <a class="nav-link dropdown-toggle text-light d-flex align-items-center gap-2" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{% static 'assets/img/avatar-admin.svg' %}" alt="Admin" style="width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid #818cf8;">
+                        <span class="d-none d-lg-inline small">Aphiwat</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="#!"><i class="fa-solid fa-gear me-2 text-muted"></i>การตั้งค่า</a></li>
+                        <li><a class="dropdown-item" href="#!"><i class="fa-solid fa-clock-rotate-left me-2 text-muted"></i>ประวัติการใช้งาน</a></li>
                         <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="#!">Logout</a></li>
+                        <li><a class="dropdown-item text-danger" href="#!"><i class="fa-solid fa-right-from-bracket me-2"></i>ออกจากระบบ</a></li>
                     </ul>
                 </li>
             </ul>
@@ -43,54 +59,77 @@
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
-                            <div class="sb-sidenav-menu-heading">Core</div>
-                            <a class="nav-link" href="{% url 'home' %}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-house"></i></div>
-                                Home
+                            <div class="sb-sidenav-menu-heading">ระบบข้อมูลนักศึกษา</div>
+                            <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
+                                รายชื่อนักศึกษาทั้งหมด
                             </a>
-                            <a class="nav-link" href="{% url 'about' %}">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'student_create' %}active{% endif %}" href="{% url 'student_create' %}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-user-plus"></i></div>
+                                เพิ่มนักศึกษาใหม่
+                            </a>
+
+                            <div class="sb-sidenav-menu-heading">เมนูอื่นๆ</div>
+                            <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-circle-info"></i></div>
-                                About
+                                เกี่ยวกับระบบ
                             </a>
-                            <a class="nav-link" href="{% url 'contact' %}">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-address-book"></i></div>
-                                Contact
+                                ติดต่อเรา
                             </a>
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
-                        <div class="small">Logged in as:</div>
-                        Start Bootstrap
+                        <div class="small">ระบบจัดการฐานข้อมูล</div>
+                        Django + PostgreSQL
                     </div>
                 </nav>
             </div>
             <div id="layoutSidenav_content">
-                <main>
-                    <div class="container-fluid px-4">
+                <main class="py-4">
+                    <div class="container-fluid px-4 px-lg-5">
+                        {% if messages %}
+                            <div class="mb-4">
+                                {% for message in messages %}
+                                    <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags %}{{ message.tags }}{% else %}info{% endif %} alert-dismissible fade show d-flex align-items-center" role="alert">
+                                        <div class="me-3 fs-5">
+                                            {% if message.tags == 'success' %}
+                                                <i class="fa-solid fa-circle-check text-success"></i>
+                                            {% elif message.tags == 'error' %}
+                                                <i class="fa-solid fa-circle-exclamation text-danger"></i>
+                                            {% else %}
+                                                <i class="fa-solid fa-circle-info text-primary"></i>
+                                            {% endif %}
+                                        </div>
+                                        <div>{{ message }}</div>
+                                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+
                         {% block content %}
                         {% endblock %}
                     </div>
                 </main>
-                <footer class="py-4 bg-light mt-auto">
-                    <div class="container-fluid px-4">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2026</div>
-                            <div>
-                                <a href="#">Privacy Policy</a>
-                                &middot;
-                                <a href="#">Terms &amp; Conditions</a>
+                <footer class="py-4 bg-white mt-auto border-top">
+                    <div class="container-fluid px-4 px-lg-5">
+                        <div class="d-flex align-items-center justify-content-between small text-muted">
+                            <div>Copyright &copy; <strong>Student Hub</strong> 2026. All rights reserved.</div>
+                            <div class="d-flex gap-3">
+                                <a href="#" class="text-decoration-none text-muted">นโยบายความเป็นส่วนตัว</a>
+                                <span>&bull;</span>
+                                <a href="#" class="text-decoration-none text-muted">ข้อกำหนดการใช้งาน</a>
                             </div>
                         </div>
                     </div>
                 </footer>
             </div>
         </div>
+        
+        <!-- JavaScript Bundle -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="{% static 'js/scripts.js' %}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="{% static 'assets/demo/chart-area-demo.js' %}"></script>
-        <script src="{% static 'assets/demo/chart-bar-demo.js' %}"></script>
-        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-        <script src="{% static 'js/datatables-simple-demo.js' %}"></script>
     </body>
 </html>

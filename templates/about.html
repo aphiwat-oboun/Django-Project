@@ -1,7 +1,61 @@
-{% extends "base.html" %} {% block content %}
-<h1 class="mt-4">About Us</h1>
-<ol class="breadcrumb mb-4">
-  <li class="breadcrumb-item active">About Us</li>
-</ol>
+{% extends "base.html" %}
 
+{% block title %}เกี่ยวกับระบบ | About Us{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fa-solid fa-house me-1"></i>หน้าหลัก</a></li>
+                <li class="breadcrumb-item active" aria-current="page">เกี่ยวกับระบบ</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-slate-800 m-0">
+            <i class="fa-solid fa-circle-info text-primary me-2"></i>เกี่ยวกับระบบ Student Hub
+        </h2>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-12 col-lg-8">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4 p-md-5">
+                <h4 class="fw-bold text-dark mb-3">ระบบบริหารจัดการข้อมูลนักศึกษา (Student Management System)</h4>
+                <p class="text-muted leading-relaxed">
+                    ระบบเว็บแอปพลิเคชันที่พัฒนาขึ้นด้วย <strong>Django Framework</strong> ร่วมกับฐานข้อมูล <strong>PostgreSQL</strong> เพื่อการจัดการข้อมูลนักศึกษาอย่างมีประสิทธิภาพ รวดเร็ว และปลอดภัย ครอบคลุมการทำงานแบบ CRUD ครบวงจร
+                </p>
+                <div class="row g-3 mt-3">
+                    <div class="col-sm-6">
+                        <div class="p-3 bg-light rounded-3 border">
+                            <div class="fw-bold text-primary mb-1"><i class="fa-solid fa-layer-group me-1"></i> สถาปัตยกรรมระบบ</div>
+                            <small class="text-muted">Django MVT (Model - View - Template)</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 bg-light rounded-3 border">
+                            <div class="fw-bold text-success mb-1"><i class="fa-solid fa-database me-1"></i> ฐานข้อมูล</div>
+                            <small class="text-muted">Neon Cloud PostgreSQL</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header gradient-primary text-white py-3">
+                <i class="fa-solid fa-code me-1"></i> ข้อมูลผู้พัฒนา
+            </div>
+            <div class="card-body p-4 text-center">
+                <div class="avatar-badge mx-auto mb-3" style="width: 64px; height: 64px; font-size: 1.5rem;">AO</div>
+                <h5 class="fw-bold mb-1">Aphiwat Obaun</h5>
+                <p class="text-muted small mb-3">Full Stack Developer</p>
+                <div class="badge bg-light text-primary border px-3 py-2 rounded-pill">
+                    <i class="fa-brands fa-python me-1"></i> Django Developer
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

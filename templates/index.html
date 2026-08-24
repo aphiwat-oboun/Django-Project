@@ -1,35 +1,146 @@
-{% extends "base.html" %} {% block content %}
-<h1 class="mt-4">{{title}}</h1>
-<ol class="breadcrumb mb-4">
-  <li class="breadcrumb-item active">
-    {{title}} | Date: {{date|date:"F d, Y"}}
-  </li>
-</ol>
+{% extends "base.html" %}
+{% load static %}
 
-<table class="table table-striped">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">ID STUDENT</th>
-        <th scope="col">PREFIX NAME</th>
-        <th scope="col">FIRST NAME</th>
-        <th scope="col">LAST NAME</th>
-        <th scope="col">MAJOR</th>
-      </tr>
-    </thead>
-  </thead>
+{% block title %}{{ title }}{% endblock %}
 
-  <tbody>
-    {% for student in students %}
-    <tr>
-      <th scope="row">{{ forloop.counter }}</th>
-      <td><a href="{% url 'student_detail' pk=student.pk %}">{{ student.stu_id }}</a></td>
-      <td>{{ student.get_prefix_name_display }}</td>
-      <td>{{ student.fname }}</td>
-      <td>{{ student.lname }}</td>
-      <td>{{ student.major }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+{% block content %}
+<!-- Page Header -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold text-slate-800 m-0 mb-1">
+            <i class="fa-solid fa-users-viewfinder text-primary me-2"></i>ระบบจัดการข้อมูลนักศึกษา
+        </h2>
+        <p class="text-muted small m-0">จัดการ ดูรายละเอียด เพิ่ม แก้ไข และลบข้อมูลนักศึกษาในระบบ</p>
+    </div>
+    <div class="mt-3 mt-md-0">
+        <a href="{% url 'student_create' %}" class="btn btn-primary shadow-sm">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>เพิ่มนักศึกษาใหม่</span>
+        </a>
+    </div>
+</div>
+
+<!-- Stat Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-12 col-sm-6 col-xl-4">
+        <div class="stat-card">
+            <div>
+                <div class="stat-number">{{ students|length }}</div>
+                <div class="stat-label">นักศึกษาทั้งหมด (คน)</div>
+            </div>
+            <div class="stat-icon primary">
+                <i class="fa-solid fa-user-graduate"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-4">
+        <div class="stat-card">
+            <div>
+                <div class="stat-number">{{ majors|length|default:"-" }}</div>
+                <div class="stat-label">สาขาวิชาทั้งหมด</div>
+            </div>
+            <div class="stat-icon info">
+                <i class="fa-solid fa-book-bookmark"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-4">
+        <div class="stat-card">
+            <div>
+                <div class="stat-number text-success"><i class="fa-solid fa-circle-check fs-4 me-1"></i> ออนไลน์</div>
+                <div class="stat-label">สถานะระบบฐานข้อมูล</div>
+            </div>
+            <div class="stat-icon success">
+                <i class="fa-solid fa-server"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Table Card -->
+<div class="card mb-4">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center py-3">
+        <div class="d-flex align-items-center gap-2">
+            <i class="fa-solid fa-table-list text-primary fs-5"></i>
+            <span class="fw-bold fs-6">ตารางรายชื่อนักศึกษา</span>
+        </div>
+        <div class="badge bg-light text-dark border px-3 py-2 rounded-pill">
+            อัปเดตล่าสุด: {{ date|date:"d M Y" }}
+        </div>
+    </div>
+    <div class="card-body p-0">
+        {% if students %}
+        <div class="table-responsive">
+            <table class="custom-table mb-0">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 5%">#</th>
+                        <th style="width: 15%">รหัสนักศึกษา</th>
+                        <th style="width: 32%">นักศึกษา (รูป & ชื่อ-สกุล)</th>
+                        <th style="width: 25%">สาขาวิชา (Major)</th>
+                        <th class="text-center" style="width: 15%">จัดการข้อมูล</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td class="text-center text-muted fw-bold">{{ forloop.counter }}</td>
+                        <td>
+                            <a href="{% url 'student_detail' pk=student.pk %}" class="stu-id-badge text-decoration-none" title="คลิกเพื่อดูรายละเอียด">
+                                <i class="fa-solid fa-id-card text-muted me-1"></i>{{ student.stu_id }}
+                            </a>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    {% if student.prefix_name == "2" or student.prefix_name == "3" %}
+                                        <img src="{% static 'assets/img/avatar-female.svg' %}" alt="Avatar" class="student-avatar-img">
+                                    {% else %}
+                                        <img src="{% static 'assets/img/avatar-male.svg' %}" alt="Avatar" class="student-avatar-img">
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <a href="{% url 'student_detail' pk=student.pk %}" class="fw-semibold text-dark text-decoration-none d-block">
+                                        {{ student.get_prefix_name_display }}{{ student.fname }} {{ student.lname }}
+                                    </a>
+                                    <span class="text-muted small">คำนำหน้า: {{ student.get_prefix_name_display }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="major-badge">
+                                <i class="fa-solid fa-tag"></i>
+                                {{ student.major.major_name|default:student.major }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-inline-flex gap-1">
+                                <a href="{% url 'student_detail' pk=student.pk %}" class="action-btn btn-view" title="ดูรายละเอียด">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                                <a href="{% url 'student_update' pk=student.pk %}" class="action-btn btn-edit" title="แก้ไขข้อมูล">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <a href="{% url 'student_delete' pk=student.pk %}" class="action-btn btn-delete" title="ลบข้อมูล">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5 px-3">
+            <img src="{% static 'assets/img/avatar-male.svg' %}" alt="Empty" style="width: 72px; opacity: 0.5;" class="mb-3">
+            <h5 class="fw-bold text-dark mb-1">ยังไม่มีข้อมูลนักศึกษาในระบบ</h5>
+            <p class="text-muted small mb-4">เริ่มต้นด้วยการเพิ่มข้อมูลนักศึกษาคนแรกเข้าสู่ระบบ</p>
+            <a href="{% url 'student_create' %}" class="btn btn-primary">
+                <i class="fa-solid fa-plus me-1"></i> เพิ่มนักศึกษาใหม่
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}

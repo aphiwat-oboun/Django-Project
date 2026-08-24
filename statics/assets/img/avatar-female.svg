@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGradFemale" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ec4899"/>
+      <stop offset="100%" stop-color="#f43f5e"/>
+    </linearGradient>
+    <linearGradient id="shirtFemale" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Circle -->
+  <circle cx="60" cy="60" r="58" fill="url(#bgGradFemale)" />
+  
+  <!-- Long Hair Back -->
+  <path d="M34 45 C34 70, 36 90, 42 96 C48 85, 48 65, 48 50 Z" fill="#331832" />
+  <path d="M86 45 C86 70, 84 90, 78 96 C72 85, 72 65, 72 50 Z" fill="#331832" />
+
+  <!-- Female Body / Uniform -->
+  <path d="M28 110 C28 85, 44 78, 60 78 C76 78, 92 85, 92 110 Z" fill="url(#shirtFemale)" />
+  <path d="M52 78 L60 88 L68 78 Z" fill="#ffffff" />
+  <circle cx="60" cy="85" r="3" fill="#ec4899" />
+  
+  <!-- Head & Neck -->
+  <rect x="52" y="62" width="16" height="18" rx="4" fill="#fbbf24" />
+  <circle cx="60" cy="50" r="21" fill="#fbbf24" />
+  
+  <!-- Hair Front (Bangs & style) -->
+  <path d="M36 46 C36 28, 48 22, 60 22 C72 22, 84 28, 84 46 C80 34, 68 30, 60 30 C50 30, 40 34, 36 46 Z" fill="#331832" />
+  
+  <!-- Friendly Face Details -->
+  <circle cx="53" cy="48" r="2.5" fill="#0f172a" />
+  <circle cx="67" cy="48" r="2.5" fill="#0f172a" />
+  <!-- Eyelashes -->
+  <path d="M50 45 L52 47" stroke="#0f172a" stroke-width="1.5" stroke-linecap="round" />
+  <path d="M70 45 L68 47" stroke="#0f172a" stroke-width="1.5" stroke-linecap="round" />
+  <!-- Smile & Blush -->
+  <path d="M55 57 Q60 62 65 57" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" fill="none" />
+  <circle cx="50" cy="54" r="3" fill="#f43f5e" opacity="0.4" />
+  <circle cx="70" cy="54" r="3" fill="#f43f5e" opacity="0.4" />
+</svg>

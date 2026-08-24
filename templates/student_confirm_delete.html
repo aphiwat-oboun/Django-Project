@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<!-- Page Header & Breadcrumb -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">หน้าหลัก</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'student_detail' pk=student.pk %}">{{ student.stu_id }}</a></li>
+                <li class="breadcrumb-item active text-danger" aria-current="page">ยืนยันการลบ</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-danger m-0">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>ยืนยันการลบข้อมูล
+        </h2>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow-sm border mb-4">
+            <div class="card-header bg-danger text-white py-3 px-4">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span class="fw-bold">คำเตือนการลบข้อมูล</span>
+                </div>
+            </div>
+            
+            <div class="card-body p-4 text-center">
+                <!-- Clean Warning Icon -->
+                <div class="rounded-circle bg-danger bg-opacity-10 text-danger d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px; font-size: 1.75rem;">
+                    <i class="fa-solid fa-trash-can"></i>
+                </div>
+
+                <h5 class="fw-bold text-dark mb-2">คุณแน่ใจหรือไม่ว่าต้องการลบข้อมูลนักศึกษาคนนี้?</h5>
+                <p class="text-muted small mb-4">
+                    เมื่อลบแล้วจะไม่สามารถกู้คืนข้อมูลนักศึกษารายนี้กลับมาได้
+                </p>
+
+                <!-- Student Summary Box -->
+                <div class="bg-light border rounded-3 p-3 text-start mb-4">
+                    <div class="d-flex justify-content-between py-1 border-bottom">
+                        <span class="text-muted small">รหัสนักศึกษา:</span>
+                        <span class="fw-bold font-monospace text-primary">{{ student.stu_id }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-1 border-bottom">
+                        <span class="text-muted small">ชื่อ - นามสกุล:</span>
+                        <span class="fw-semibold text-dark">{{ student.get_prefix_name_display }}{{ student.fname }} {{ student.lname }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-1">
+                        <span class="text-muted small">สาขาวิชา:</span>
+                        <span class="badge bg-secondary">{{ student.major.major_name|default:student.major }}</span>
+                    </div>
+                </div>
+
+                <form method="post" class="d-flex justify-content-center gap-3 mt-3">
+                    {% csrf_token %}
+                    <a href="{% url 'student_detail' pk=student.pk %}" class="btn btn-secondary px-4">
+                        <i class="fa-solid fa-xmark me-1"></i> ยกเลิก
+                    </a>
+                    <button type="submit" class="btn btn-danger px-4">
+                        <i class="fa-solid fa-trash-can me-1"></i> ลบข้อมูล
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
