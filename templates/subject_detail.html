@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<div class="breadcrumb-ref">
+    <a href="{% url 'home' %}"><i class="fa-solid fa-house"></i> หน้าหลัก</a>
+    <span class="separator">&rsaquo;</span>
+    <a href="{% url 'subject_list' %}">รายวิชาทั้งหมด</a>
+    <span class="separator">&rsaquo;</span>
+    <span class="current">{{ subject.subject_code }}</span>
+</div>
+
+<!-- Page Header -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="header-title-text">รายละเอียดรายวิชา</h1>
+        <p class="header-subtitle-text">ข้อมูลรหัสวิชา ชื่อวิชา และหมวดหมู่ตามโครงสร้างหลักสูตร</p>
+    </div>
+    <div class="d-flex gap-2 mt-3 mt-md-0">
+        <a href="{% url 'subject_list' %}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-1" style="border-radius: 8px; font-weight: 600; padding: 0.55rem 1.15rem;">
+            <i class="fa-solid fa-arrow-left"></i> กลับหน้ารายการ
+        </a>
+        <a href="{% url 'subject_update' pk=subject.pk %}" class="btn btn-warning text-dark d-inline-flex align-items-center gap-1" style="border-radius: 8px; font-weight: 600; padding: 0.55rem 1.15rem;">
+            <i class="fa-solid fa-pen-to-square"></i> แก้ไขวิชา
+        </a>
+        <a href="{% url 'subject_delete' pk=subject.pk %}" class="btn btn-danger d-inline-flex align-items-center gap-1" style="border-radius: 8px; font-weight: 600; padding: 0.55rem 1.15rem;">
+            <i class="fa-solid fa-trash-can"></i> ลบวิชา
+        </a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-9">
+        <div class="detail-card-premium mb-4">
+            <!-- Hero Header -->
+            <div class="detail-hero-gradient">
+                <div class="d-flex flex-column flex-sm-row align-items-center gap-4">
+                    <div class="stat-icon-box-ref blue" style="width: 72px; height: 72px; font-size: 2rem; border-radius: 16px;">
+                        <i class="fa-solid fa-book-bookmark"></i>
+                    </div>
+                    <div class="text-center text-sm-start">
+                        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-sm-start gap-2 mb-1">
+                            <span class="badge bg-primary px-3 py-1 font-monospace" style="font-size: 0.85rem; letter-spacing: 0.05em;">{{ subject.subject_code }}</span>
+                            <span class="badge bg-info text-dark px-3 py-1 fw-normal" style="font-size: 0.85rem;">{{ subject.category.category_name }}</span>
+                        </div>
+                        <h2 class="h3 fw-bold text-white mb-1">
+                            {{ subject.subject_name }}
+                        </h2>
+                        <div class="text-light opacity-75 small">
+                            <i class="fa-solid fa-tag me-1 text-primary"></i> โครงสร้างหลักสูตรรายวิชา
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detail Grid Body -->
+            <div class="p-4 p-md-5">
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <div class="detail-tile-box">
+                            <div class="lbl"><i class="fa-solid fa-barcode me-1 text-primary"></i> รหัสวิชา</div>
+                            <div class="val font-monospace text-primary">{{ subject.subject_code }}</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="detail-tile-box">
+                            <div class="lbl"><i class="fa-solid fa-tags me-1 text-primary"></i> หมวดหมู่วิชา</div>
+                            <div class="val">{{ subject.category.category_name }}</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="detail-tile-box">
+                            <div class="lbl"><i class="fa-solid fa-book-open me-1 text-primary"></i> ชื่อรายวิชาเรียน</div>
+                            <div class="val text-dark">{{ subject.subject_name }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

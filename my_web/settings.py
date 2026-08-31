@@ -21,12 +21,11 @@ from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Load environment variables (..env.example or .env file)
-env_file = BASE_DIR / "..env.example" if (BASE_DIR / "..env.example").is_file() else BASE_DIR / ".env"
-if env_file.is_file():
-    load_dotenv(env_file)
-else:
-    load_dotenv()
+# Load environment variables (.env.local, .env, or system env)
+load_dotenv(BASE_DIR / ".env.local")
+load_dotenv(BASE_DIR / ".env")
+load_dotenv()
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/

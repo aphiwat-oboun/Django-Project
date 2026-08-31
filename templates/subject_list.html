@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<div class="breadcrumb-ref">
+    <a href="{% url 'home' %}"><i class="fa-solid fa-house"></i> หน้าหลัก</a>
+    <span class="separator">&rsaquo;</span>
+    <span class="current">รายวิชาทั้งหมด</span>
+</div>
+
+<!-- Page Header -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="header-title-text">ระบบจัดการข้อมูลรายวิชา</h1>
+        <p class="header-subtitle-text">โครงสร้างหลักสูตรรายวิชา หมวดหมู่วิชา และการจัดการหลักสูตร</p>
+    </div>
+    <div class="mt-3 mt-md-0">
+        <a href="{% url 'subject_create' %}" class="btn-primary-ref">
+            <i class="fa-solid fa-plus"></i> เพิ่มรายวิชาใหม่
+        </a>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row g-3 mb-4">
+    <!-- Card 1: Total Subjects -->
+    <div class="col-12 col-sm-6 col-xl-4">
+        <div class="stat-card-ref">
+            <div class="stat-icon-box-ref blue">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+            <div class="stat-content-ref">
+                <div class="stat-number-text">{{ total_subjects }}</div>
+                <div class="stat-title-text">รายวิชาในหลักสูตรทั้งหมด</div>
+                <div class="stat-desc-text">เปิดสอนทั้งหมดในระบบ</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2: Categories -->
+    <div class="col-12 col-sm-6 col-xl-4">
+        <div class="stat-card-ref">
+            <div class="stat-icon-box-ref green">
+                <i class="fa-solid fa-tags"></i>
+            </div>
+            <div class="stat-content-ref">
+                <div class="stat-number-text">{{ total_categories }}</div>
+                <div class="stat-title-text">หมวดหมู่วิชาทั้งหมด</div>
+                <div class="stat-desc-text">หมวดหมู่หลักสูตร</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 3: Displayed Subjects -->
+    <div class="col-12 col-sm-6 col-xl-4">
+        <div class="stat-card-ref">
+            <div class="stat-icon-box-ref purple">
+                <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div class="stat-content-ref">
+                <div class="stat-number-text">{{ subjects|length }}</div>
+                <div class="stat-title-text">วิชาที่แสดงผล</div>
+                <div class="stat-desc-text">รายการปัจจุบัน</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Table Card -->
+<div class="main-table-card mb-4">
+    <!-- Card Header -->
+    <div class="table-card-header">
+        <div class="table-card-title">
+            <i class="fa-solid fa-table-list"></i>
+            <span>ตารางรายวิชาในหลักสูตร</span>
+            {% if search_query %}
+                <span class="badge bg-light text-dark border ms-2 fw-normal" style="font-size: 0.75rem;">ผลการค้นหา: "{{ search_query }}"</span>
+            {% endif %}
+        </div>
+        <div class="table-card-meta">
+            <span>อัปเดตล่าสุด: {{ date|date:"d M Y" }}</span>
+            <a href="{% url 'subject_list' %}" class="text-muted ms-1" title="รีเฟรช"><i class="fa-solid fa-rotate-right"></i></a>
+        </div>
+    </div>
+
+    <!-- Search & Filter Bar -->
+    <div class="table-filter-bar">
+        <form method="get" class="row g-2 align-items-center">
+            <div class="col-12 col-md-6">
+                <div class="position-relative">
+                    <input
+                        type="text"
+                        name="q"
+                        class="form-control filter-input pe-4"
+                        placeholder="ค้นหารหัสวิชา, ชื่อวิชา..."
+                        value="{{ search_query|default:'' }}"
+                    />
+                    <i class="fas fa-search position-absolute text-muted" style="right: 12px; top: 50%; transform: translateY(-50%); font-size: 0.85rem;"></i>
+                </div>
+            </div>
+            <div class="col-8 col-md-4">
+                <select name="category" class="form-select filter-select" onchange="this.form.submit()">
+                    <option value="">-- แสดงทุกหมวดหมู่วิชา --</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if selected_category == cat.id|stringformat:"s" %}selected{% endif %}>
+                            {{ cat.category_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-4 col-md-2 text-end">
+                <button type="submit" class="btn btn-primary-ref w-100 justify-content-center" style="height: 40px;">
+                    <i class="fa-solid fa-sliders"></i> กรอง
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Table Body -->
+    <div class="p-0">
+        {% if subjects %}
+        <div class="table-responsive">
+            <table class="ref-table mb-0">
+                <thead>
+                    <tr>
+                        <th class="text-center" style="width: 5%">#</th>
+                        <th style="width: 15%">รหัสวิชา</th>
+                        <th style="width: 48%">ชื่อรายวิชา</th>
+                        <th style="width: 22%">หมวดหมู่วิชา</th>
+                        <th class="text-center" style="width: 10%">จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subject in subjects %}
+                    <tr>
+                        <td class="text-center text-muted fw-bold">
+                            {% if page_obj %}
+                                {{ forloop.counter0|add:page_obj.start_index }}
+                            {% else %}
+                                {{ forloop.counter }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'subject_detail' pk=subject.pk %}" class="stu-id-link-ref">
+                                {{ subject.subject_code }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{% url 'subject_detail' pk=subject.pk %}" class="fw-bold text-dark text-decoration-none">
+                                {{ subject.subject_name }}
+                            </a>
+                        </td>
+                        <td>
+                            <span class="major-badge-ref">
+                                <i class="fa-solid fa-tag me-1 text-primary"></i>
+                                {{ subject.category.category_name }}
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <div class="d-inline-flex gap-2">
+                                <a href="{% url 'subject_detail' pk=subject.pk %}" class="action-btn-square view" title="ดูรายละเอียด">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                                <a href="{% url 'subject_update' pk=subject.pk %}" class="action-btn-square edit" title="แก้ไขข้อมูล">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <a href="{% url 'subject_delete' pk=subject.pk %}" class="action-btn-square delete" title="ลบรายวิชา">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Table Footer -->
+        <div class="ref-table-footer">
+            <div class="d-flex align-items-center">
+                {% if page_obj %}
+                    <span>แสดง <strong>{{ page_obj.start_index }}</strong> ถึง <strong>{{ page_obj.end_index }}</strong> จาก <strong>{{ paginator.count }}</strong> รายการ</span>
+                {% else %}
+                    <span>แสดง <strong>1</strong> ถึง <strong>{{ subjects|length }}</strong> จาก <strong>{{ subjects|length }}</strong> รายการ</span>
+                {% endif %}
+            </div>
+
+            <!-- Pagination -->
+            {% if page_obj and page_obj.has_other_pages %}
+            <ul class="pagination-ref">
+                {% if page_obj.has_previous %}
+                    <li>
+                        <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}" class="btn-page">
+                            <i class="fa-solid fa-chevron-left" style="font-size: 0.75rem;"></i>
+                        </a>
+                    </li>
+                {% else %}
+                    <li><span class="btn-page disabled"><i class="fa-solid fa-chevron-left" style="font-size: 0.75rem;"></i></span></li>
+                {% endif %}
+
+                {% for num in paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li><span class="btn-page active">{{ num }}</span></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li>
+                            <a href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}" class="btn-page">
+                                {{ num }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li>
+                        <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_category %}&category={{ selected_category }}{% endif %}" class="btn-page">
+                            <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
+                        </a>
+                    </li>
+                {% else %}
+                    <li><span class="btn-page disabled"><i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i></span></li>
+                {% endif %}
+            </ul>
+            {% else %}
+            <ul class="pagination-ref">
+                <li><span class="btn-page disabled"><i class="fa-solid fa-chevron-left" style="font-size: 0.75rem;"></i></span></li>
+                <li><span class="btn-page active">1</span></li>
+                <li><span class="btn-page disabled"><i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i></span></li>
+            </ul>
+            {% endif %}
+        </div>
+
+        {% else %}
+        <div class="text-center py-5 px-3">
+            <i class="fa-solid fa-book-open text-muted mb-3" style="font-size: 2.5rem;"></i>
+            <h6 class="fw-bold text-dark mb-1">ไม่พบข้อมูลรายวิชา</h6>
+            <p class="text-muted small mb-3">ไม่พบรายวิชาที่ตรงกับเงื่อนไข หรือยังไม่มีข้อมูลในระบบ</p>
+            <a href="{% url 'subject_create' %}" class="btn-primary-ref">
+                <i class="fa-solid fa-plus"></i> เพิ่มรายวิชาใหม่
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

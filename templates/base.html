@@ -5,51 +5,49 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="ระบบจัดการข้อมูลนักศึกษา Student Management System" />
+        <meta name="description" content="ระบบจัดการข้อมูลนักศึกษาและรายวิชา Student & Course Management System" />
         <meta name="author" content="Aphiwat Obaun" />
-        <title>{% block title %}{{ title|default:"Student Management System" }}{% endblock %} | ระบบจัดการข้อมูลนักศึกษา</title>
+        <title>{% block title %}{{ title|default:"Student & Course Management System" }}{% endblock %} | ระบบจัดการข้อมูล</title>
         
         <!-- Google Fonts & FontAwesome -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <script src="https://use.fontawesome.com/releases/v6.4.0/js/all.js" crossorigin="anonymous"></script>
 
         <!-- Base Stylesheet -->
-        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+        <link href="{% static 'css/styles.css' %}?v=1.1" rel="stylesheet" />
         <!-- Custom Modern Design System -->
-        <link href="{% static 'css/custom.css' %}" rel="stylesheet" />
+        <link href="{% static 'css/custom.css' %}?v=1.1" rel="stylesheet" />
     </head>
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark">
             <!-- Navbar Brand-->
             <a class="navbar-brand ps-3 d-flex align-items-center gap-2" href="{% url 'home' %}">
-                <i class="fa-solid fa-graduation-cap" style="color: #818cf8;"></i>
-                <span>Student Hub</span>
+                <i class="fa-solid fa-graduation-cap" style="color: #3b82f6;"></i>
+                <span>Aphiwat Obaun</span>
             </a>
             <!-- Sidebar Toggle-->
-            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0 text-light" id="sidebarToggle" href="#!"><i class="fas fa-bars-staggered"></i></button>
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-3 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
             
             <!-- Navbar Search-->
-            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" action="{% url 'home' %}" method="get">
-                <div class="input-group">
-                    <input class="form-control form-control-sm" type="text" name="q" placeholder="ค้นหารหัสนักศึกษา / ชื่อ..." aria-label="Search" />
-                    <button class="btn btn-primary btn-sm" type="button"><i class="fas fa-search"></i></button>
+            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" action="{% if 'subject' in request.path %}{% url 'subject_list' %}{% else %}{% url 'home' %}{% endif %}" method="get">
+                <div class="nav-search-wrapper">
+                    <input class="form-control nav-search-input-ref" type="text" name="q" placeholder="ค้นหารหัส / ชื่อ..." aria-label="Search" value="{{ search_query|default:'' }}" />
+                    <i class="fas fa-search nav-search-icon-inside"></i>
                 </div>
             </form>
             
             <!-- Navbar Right Items-->
             <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-light d-flex align-items-center gap-2" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="{% static 'assets/img/avatar-admin.svg' %}" alt="Admin" style="width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid #818cf8;">
-                        <span class="d-none d-lg-inline small">Aphiwat</span>
+                    <a class="nav-link dropdown-toggle nav-user-btn" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{% static 'assets/img/avatar-admin.svg' %}" alt="Admin" class="nav-user-avatar">
+                        <span class="d-none d-lg-inline small fw-semibold">Admin</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#!"><i class="fa-solid fa-gear me-2 text-muted"></i>การตั้งค่า</a></li>
-                        <li><a class="dropdown-item" href="#!"><i class="fa-solid fa-clock-rotate-left me-2 text-muted"></i>ประวัติการใช้งาน</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item text-danger" href="#!"><i class="fa-solid fa-right-from-bracket me-2"></i>ออกจากระบบ</a></li>
+                        <li><a class="dropdown-item" href="{% url 'home' %}"><i class="fa-solid fa-users me-2 text-muted"></i>หน้านักศึกษา</a></li>
+                        <li><a class="dropdown-item" href="{% url 'subject_list' %}"><i class="fa-solid fa-book-bookmark me-2 text-muted"></i>หน้ารายวิชา</a></li>
                     </ul>
                 </li>
             </ul>
@@ -59,38 +57,56 @@
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
+                            <!-- Student Section -->
                             <div class="sb-sidenav-menu-heading">ระบบข้อมูลนักศึกษา</div>
-                            <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">
+                            <a class="nav-link {% if request.resolver_match.url_name in 'home,student_detail,student_update,student_delete' %}active{% endif %}" href="{% url 'home' %}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
-                                รายชื่อนักศึกษาทั้งหมด
+                                รายชื่อนักศึกษา
                             </a>
                             <a class="nav-link {% if request.resolver_match.url_name == 'student_create' %}active{% endif %}" href="{% url 'student_create' %}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-user-plus"></i></div>
                                 เพิ่มนักศึกษาใหม่
                             </a>
 
+                            <!-- Subject Section -->
+                            <div class="sb-sidenav-menu-heading">ระบบข้อมูลรายวิชา</div>
+                            <a class="nav-link {% if request.resolver_match.url_name in 'subject_list,subject_detail,subject_update,subject_delete' %}active{% endif %}" href="{% url 'subject_list' %}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-book-bookmark"></i></div>
+                                รายวิชาทั้งหมด
+                            </a>
+                            <a class="nav-link {% if request.resolver_match.url_name == 'subject_create' %}active{% endif %}" href="{% url 'subject_create' %}">
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-folder-plus"></i></div>
+                                เพิ่มรายวิชาใหม่
+                            </a>
+
+                            <!-- Other Section -->
                             <div class="sb-sidenav-menu-heading">เมนูอื่นๆ</div>
                             <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-circle-info"></i></div>
                                 เกี่ยวกับระบบ
                             </a>
                             <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}">
-                                <div class="sb-nav-link-icon"><i class="fa-solid fa-address-book"></i></div>
+                                <div class="sb-nav-link-icon"><i class="fa-solid fa-phone"></i></div>
                                 ติดต่อเรา
                             </a>
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
-                        <div class="small">ระบบจัดการฐานข้อมูล</div>
-                        Django + PostgreSQL
+                        <div class="small fw-semibold text-light mb-1">ระบบจัดการฐานข้อมูล</div>
+                        <div class="text-muted small mb-1">Django • PostgreSQL</div>
+                        <div>
+                            <div class="sidebar-status-pill">
+                                <span class="status-dot-green"></span> ระบบพร้อมใช้งาน
+                            </div>
+                        </div>
                     </div>
                 </nav>
             </div>
             <div id="layoutSidenav_content">
-                <main class="py-4">
-                    <div class="container-fluid px-4 px-lg-5">
+                <main>
+                    <div class="container-fluid content-container">
                         {% if messages %}
-                            <div class="mb-4">
+                            <div class="mb-3">
                                 {% for message in messages %}
                                     <div class="alert alert-{% if message.tags == 'error' %}danger{% elif message.tags %}{{ message.tags }}{% else %}info{% endif %} alert-dismissible fade show d-flex align-items-center" role="alert">
                                         <div class="me-3 fs-5">
@@ -108,26 +124,11 @@
                                 {% endfor %}
                             </div>
                         {% endif %}
-
-                        {% block content %}
-                        {% endblock %}
+                        {% block content %}{% endblock %}
                     </div>
                 </main>
-                <footer class="py-4 bg-white mt-auto border-top">
-                    <div class="container-fluid px-4 px-lg-5">
-                        <div class="d-flex align-items-center justify-content-between small text-muted">
-                            <div>Copyright &copy; <strong>Student Hub</strong> 2026. All rights reserved.</div>
-                            <div class="d-flex gap-3">
-                                <a href="#" class="text-decoration-none text-muted">นโยบายความเป็นส่วนตัว</a>
-                                <span>&bull;</span>
-                                <a href="#" class="text-decoration-none text-muted">ข้อกำหนดการใช้งาน</a>
-                            </div>
-                        </div>
-                    </div>
-                </footer>
             </div>
         </div>
-        
         <!-- JavaScript Bundle -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="{% static 'js/scripts.js' %}"></script>

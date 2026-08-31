@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student
+from .models import Student, Subject
 
 class StudentForm(forms.ModelForm):
     class Meta:
@@ -29,6 +29,30 @@ class StudentForm(forms.ModelForm):
                 'placeholder': 'กรอกนามสกุล',
             }),
             'major': forms.Select(attrs={
+                'class': 'form-select',
+            }),
+        }
+
+
+class SubjectForm(forms.ModelForm):
+    class Meta:
+        model = Subject
+        fields = ['subject_code', 'subject_name', 'category']
+        labels = {
+            'subject_code': 'รหัสวิชา',
+            'subject_name': 'ชื่อรายวิชา',
+            'category': 'หมวดหมู่วิชา',
+        }
+        widgets = {
+            'subject_code': forms.TextInput(attrs={
+                'class': 'form-control font-monospace',
+                'placeholder': 'เช่น CS101, CS201',
+            }),
+            'subject_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'เช่น พื้นฐานวิทยาการคอมพิวเตอร์',
+            }),
+            'category': forms.Select(attrs={
                 'class': 'form-select',
             }),
         }
