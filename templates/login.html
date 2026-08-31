@@ -145,7 +145,7 @@
 
   .btn-social-auth {
     border-radius: 10px;
-    padding: 0.55rem 1rem;
+    padding: 0.5rem 1rem;
     font-weight: 500;
     font-size: 0.85rem;
     display: flex;
@@ -180,13 +180,25 @@
     color: #ffffff;
   }
 
+  .btn-social-github {
+    background: #24292f;
+    border: 1.5px solid #24292f;
+    color: #ffffff;
+  }
+
+  .btn-social-github:hover {
+    background: #1c1f23;
+    border-color: #1c1f23;
+    color: #ffffff;
+  }
+
   .auth-divider-line {
     display: flex;
     align-items: center;
     text-align: center;
     color: #94a3b8;
     font-size: 0.75rem;
-    margin: 1rem 0;
+    margin: 0.85rem 0;
   }
 
   .auth-divider-line::before,
@@ -255,7 +267,7 @@
                 {% csrf_token %}
                 
                 <!-- Username Field -->
-                <div class="mb-2.5">
+                <div class="mb-2">
                     <label for="{{ form.username.id_for_label }}" class="form-label text-slate-700 fw-semibold mb-1" style="font-size: 0.825rem;">
                         ชื่อผู้ใช้งาน (Username)
                     </label>
@@ -266,7 +278,7 @@
                 </div>
 
                 <!-- Password Field -->
-                <div class="mb-3">
+                <div class="mb-2.5">
                     <label for="{{ form.password.id_for_label }}" class="form-label text-slate-700 fw-semibold mb-1" style="font-size: 0.825rem;">
                         รหัสผ่าน (Password)
                     </label>
@@ -286,10 +298,10 @@
                 </button>
             </form>
 
-            <div class="auth-divider-line">หรือเข้าสู่ระบบด่วนด้วย</div>
+            <div class="auth-divider-line">หรือเข้าสู่ระบบด้วย OAuth 2.0</div>
 
-            <!-- Social Login Buttons -->
-            <div class="d-grid gap-2 mb-3">
+            <!-- Social Login Buttons (Google, LINE, GitHub) -->
+            <div class="d-grid gap-2 mb-2">
                 <a href="{% url 'social_login' provider='google' %}" class="btn-social-auth btn-social-google">
                     <svg width="16" height="16" viewBox="0 0 48 48">
                         <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -297,12 +309,22 @@
                         <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.55 10.78l7.98-6.19z"/>
                         <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
                     </svg>
-                    <span>เข้าสู่ระบบด้วย Google Account</span>
+                    <span>เข้าสู่ระบบด้วย Google</span>
                 </a>
-                <a href="{% url 'social_login' provider='line' %}" class="btn-social-auth btn-social-line">
-                    <i class="fa-brands fa-line fs-6"></i>
-                    <span>เข้าสู่ระบบด้วย LINE</span>
-                </a>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <a href="{% url 'social_login' provider='line' %}" class="btn-social-auth btn-social-line w-100">
+                            <i class="fa-brands fa-line fs-6"></i>
+                            <span>LINE</span>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="{% url 'social_login' provider='github' %}" class="btn-social-auth btn-social-github w-100">
+                            <i class="fa-brands fa-github fs-6"></i>
+                            <span>GitHub</span>
+                        </a>
+                    </div>
+                </div>
             </div>
 
             <!-- Footer Link -->
