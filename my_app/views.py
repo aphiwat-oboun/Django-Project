@@ -12,8 +12,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 import datetime
-from .models import Student, Major, Category, Subject
-from .forms import StudentForm, SubjectForm, RegisterForm
+from .models import Student, Major, Category, Subject, Enrolls, SEMESTER
+from .forms import StudentForm, SubjectForm, RegisterForm, EnrollsForm
 
 def home(request):
     q = request.GET.get("q", "").strip()
@@ -70,13 +70,20 @@ def contact(request):
     return render(request, "contact.html", context)
 
 
-# ---------------- Student CRUD ----------------
+# ---------------- Student CRUD & Enrollment ----------------
 def student_detail(request, pk):
     student = get_object_or_404(Student.objects.select_related("major"), pk=pk)
+    enrolls = student.enrolls.select_related("subject", "subject__category").all().order_by("semester", "subject__subject_code")
+    all_subjects = Subject.objects.select_related("category").all().order_by("subject_code")
+    enroll_form = EnrollsForm()
 
     context = {
         "title": f"ข้อมูลนักศึกษา: {student.get_prefix_name_display()}{student.fname} {student.lname}",
         "student": student,
+        "enrolls": enrolls,
+        "all_subjects": all_subjects,
+        "semesters": SEMESTER,
+        "enroll_form": enroll_form,
         "date": datetime.datetime.today(),
     }
 
@@ -144,6 +151,43 @@ def student_delete(request, pk):
         "date": datetime.datetime.today(),
     }
     return render(request, "student_confirm_delete.html", context)
+
+
+# ---------------- Enrollment Actions (ลงทะเบียนเรียน) ----------------
+@login_required
+def enroll_create(request, student_id):
+    student = get_object_or_404(Student, pk=student_id)
+    if request.method == "POST":
+        form = EnrollsForm(request.POST)
+        if form.is_valid():
+            subject = form.cleaned_data.get("subject")
+            semester = form.cleaned_data.get("semester")
+
+            # Check for duplicate enrollment in same semester
+            if Enrolls.objects.filter(student=student, subject=subject, semester=semester).exists():
+                messages.warning(request, f"นักศึกษาได้ลงทะเบียนวิชา {subject.subject_code} ในภาคเรียน {semester} ไปแล้ว")
+            else:
+                enroll = form.save(commit=False)
+                enroll.student = student
+                enroll.save()
+                messages.success(request, f"ลงทะเบียนวิชา {subject.subject_code} ({subject.subject_name}) ภาคเรียน {semester} สำเร็จ")
+        else:
+            messages.error(request, "กรุณาเลือกรายวิชาและภาคเรียนให้ถูกต้อง")
+
+    return redirect("student_detail", pk=student.pk)
+
+
+@login_required
+def enroll_delete(request, pk):
+    enroll = get_object_or_404(Enrolls.objects.select_related("student", "subject"), pk=pk)
+    student_id = enroll.student.pk
+    if request.method == "POST":
+        subject_name = f"{enroll.subject.subject_code} - {enroll.subject.subject_name}"
+        semester = enroll.semester
+        enroll.delete()
+        messages.success(request, f"ถอนการลงทะเบียนวิชา {subject_name} (ภาคเรียน {semester}) เรียบร้อยแล้ว")
+
+    return redirect("student_detail", pk=student_id)
 
 
 # ---------------- Subject CRUD ----------------
@@ -259,7 +303,7 @@ def subject_delete(request, pk):
     return render(request, "subject_confirm_delete.html", context)
 
 
-# ---------------- Authentication (Login / Register / Logout / Social Auth) ----------------
+# ---------------- Authentication ----------------
 def login_view(request):
     if request.user.is_authenticated:
         return redirect("home")
@@ -320,9 +364,6 @@ def register_view(request):
 
 
 def social_login_view(request, provider):
-    """
-    Simulate instant social registration & login with Google and LINE Account
-    """
     if provider == "google":
         username = "google_user"
         email = "user@gmail.com"

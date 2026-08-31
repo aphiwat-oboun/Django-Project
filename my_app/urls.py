@@ -18,6 +18,10 @@ urlpatterns = [
     path('students/<int:pk>/update/', views.student_update, name='student_update'),
     path('students/<int:pk>/delete/', views.student_delete, name='student_delete'),
 
+    # Enrollment (การลงทะเบียนเรียน) URLs
+    path('students/<int:student_id>/enroll/', views.enroll_create, name='enroll_create'),
+    path('enrolls/<int:pk>/delete/', views.enroll_delete, name='enroll_delete'),
+
     # Subject CRUD URLs
     path('subjects/', views.subject_list, name='subject_list'),
     path('subjects/create/', views.subject_create, name='subject_create'),

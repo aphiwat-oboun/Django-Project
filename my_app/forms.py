@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Student, Subject
+from .models import Student, Subject, Enrolls
 
 class StudentForm(forms.ModelForm):
     class Meta:
@@ -54,6 +54,24 @@ class SubjectForm(forms.ModelForm):
                 'placeholder': 'เช่น พื้นฐานวิทยาการคอมพิวเตอร์',
             }),
             'category': forms.Select(attrs={
+                'class': 'form-select',
+            }),
+        }
+
+
+class EnrollsForm(forms.ModelForm):
+    class Meta:
+        model = Enrolls
+        fields = ['subject', 'semester']
+        labels = {
+            'subject': 'เลือกรายวิชาเรียน',
+            'semester': 'เลือกภาคเรียน',
+        }
+        widgets = {
+            'subject': forms.Select(attrs={
+                'class': 'form-select',
+            }),
+            'semester': forms.Select(attrs={
                 'class': 'form-select',
             }),
         }
