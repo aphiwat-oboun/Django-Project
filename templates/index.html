@@ -12,12 +12,14 @@
         </h2>
         <p class="text-muted small m-0">จัดการ ดูรายละเอียด เพิ่ม แก้ไข และลบข้อมูลนักศึกษาในระบบ</p>
     </div>
+    {% if user.is_authenticated %}
     <div class="mt-3 mt-md-0">
         <a href="{% url 'student_create' %}" class="btn btn-primary shadow-sm">
             <i class="fa-solid fa-user-plus"></i>
             <span>เพิ่มนักศึกษาใหม่</span>
         </a>
     </div>
+    {% endif %}
 </div>
 
 <!-- Stat Cards -->
@@ -25,7 +27,7 @@
     <div class="col-12 col-sm-6 col-xl-4">
         <div class="stat-card">
             <div>
-                <div class="stat-number">{{ students|length }}</div>
+                <div class="stat-number">{{ total_students }}</div>
                 <div class="stat-label">นักศึกษาทั้งหมด (คน)</div>
             </div>
             <div class="stat-icon primary">
@@ -36,7 +38,7 @@
     <div class="col-12 col-sm-6 col-xl-4">
         <div class="stat-card">
             <div>
-                <div class="stat-number">{{ majors|length|default:"-" }}</div>
+                <div class="stat-number">{{ total_majors }}</div>
                 <div class="stat-label">สาขาวิชาทั้งหมด</div>
             </div>
             <div class="stat-icon info">
@@ -47,8 +49,8 @@
     <div class="col-12 col-sm-6 col-xl-4">
         <div class="stat-card">
             <div>
-                <div class="stat-number text-success"><i class="fa-solid fa-circle-check fs-4 me-1"></i> ออนไลน์</div>
-                <div class="stat-label">สถานะระบบฐานข้อมูล</div>
+                <div class="stat-number text-success">{{ total_subjects }}</div>
+                <div class="stat-label">รายวิชาในหลักสูตร</div>
             </div>
             <div class="stat-icon success">
                 <i class="fa-solid fa-server"></i>
@@ -58,16 +60,53 @@
 </div>
 
 <!-- Main Table Card -->
-<div class="card mb-4">
-    <div class="card-header d-flex flex-wrap justify-content-between align-items-center py-3">
+<div class="card mb-4 shadow-sm border-0">
+    <div class="card-header d-flex flex-wrap justify-content-between align-items-center py-3 bg-white border-bottom">
         <div class="d-flex align-items-center gap-2">
             <i class="fa-solid fa-table-list text-primary fs-5"></i>
             <span class="fw-bold fs-6">ตารางรายชื่อนักศึกษา</span>
+            {% if search_query %}
+                <span class="badge bg-light text-dark border ms-2">ผลการค้นหา: "{{ search_query }}"</span>
+            {% endif %}
         </div>
         <div class="badge bg-light text-dark border px-3 py-2 rounded-pill">
             อัปเดตล่าสุด: {{ date|date:"d M Y" }}
         </div>
     </div>
+
+    <!-- Filter Bar -->
+    <div class="p-3 bg-light border-bottom">
+        <form method="get" class="row g-2 align-items-center">
+            <div class="col-12 col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text bg-white text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input
+                        type="text"
+                        name="q"
+                        class="form-control"
+                        placeholder="ค้นหาชื่อ, รหัสนักศึกษา..."
+                        value="{{ search_query|default:'' }}"
+                    />
+                </div>
+            </div>
+            <div class="col-8 col-md-4">
+                <select name="major" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- แสดงทุกสาขาวิชา --</option>
+                    {% for m in majors %}
+                        <option value="{{ m.id }}" {% if selected_major == m.id|stringformat:"s" %}selected{% endif %}>
+                            {{ m.major_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-4 col-md-2 text-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fa-solid fa-sliders me-1"></i> กรอง
+                </button>
+            </div>
+        </form>
+    </div>
+
     <div class="card-body p-0">
         {% if students %}
         <div class="table-responsive">
@@ -76,15 +115,23 @@
                     <tr>
                         <th class="text-center" style="width: 5%">#</th>
                         <th style="width: 15%">รหัสนักศึกษา</th>
-                        <th style="width: 32%">นักศึกษา (รูป & ชื่อ-สกุล)</th>
+                        <th style="width: 35%">นักศึกษา (รูป & ชื่อ-สกุล)</th>
                         <th style="width: 25%">สาขาวิชา (Major)</th>
-                        <th class="text-center" style="width: 15%">จัดการข้อมูล</th>
+                        {% if user.is_authenticated %}
+                        <th class="text-center" style="width: 20%">จัดการข้อมูล</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
                     {% for student in students %}
                     <tr>
-                        <td class="text-center text-muted fw-bold">{{ forloop.counter }}</td>
+                        <td class="text-center text-muted fw-bold">
+                            {% if page_obj %}
+                                {{ forloop.counter0|add:page_obj.start_index }}
+                            {% else %}
+                                {{ forloop.counter }}
+                            {% endif %}
+                        </td>
                         <td>
                             <a href="{% url 'student_detail' pk=student.pk %}" class="stu-id-badge text-decoration-none" title="คลิกเพื่อดูรายละเอียด">
                                 <i class="fa-solid fa-id-card text-muted me-1"></i>{{ student.stu_id }}
@@ -113,6 +160,7 @@
                                 {{ student.major.major_name|default:student.major }}
                             </span>
                         </td>
+                        {% if user.is_authenticated %}
                         <td class="text-center">
                             <div class="d-inline-flex gap-1">
                                 <a href="{% url 'student_detail' pk=student.pk %}" class="action-btn btn-view" title="ดูรายละเอียด">
@@ -126,19 +174,72 @@
                                 </a>
                             </div>
                         </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+
+        <!-- Table Footer & Pagination -->
+        <div class="d-flex flex-wrap justify-content-between align-items-center p-3 border-top bg-white">
+            <div class="text-muted small">
+                {% if page_obj %}
+                    แสดง <strong>{{ page_obj.start_index }}</strong> ถึง <strong>{{ page_obj.end_index }}</strong> จากทั้งหมด <strong>{{ paginator.count }}</strong> รายการ
+                {% else %}
+                    แสดง <strong>1</strong> ถึง <strong>{{ students|length }}</strong> จากทั้งหมด <strong>{{ students|length }}</strong> รายการ
+                {% endif %}
+            </div>
+
+            {% if page_obj and page_obj.has_other_pages %}
+            <nav aria-label="Page navigation">
+                <ul class="pagination pagination-sm m-0">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_major %}&major={{ selected_major }}{% endif %}">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link"><i class="fa-solid fa-chevron-left"></i></span></li>
+                    {% endif %}
+
+                    {% for num in paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_major %}&major={{ selected_major }}{% endif %}">
+                                    {{ num }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}{% if selected_major %}&major={{ selected_major }}{% endif %}">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link"><i class="fa-solid fa-chevron-right"></i></span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+
         {% else %}
         <div class="text-center py-5 px-3">
             <img src="{% static 'assets/img/avatar-male.svg' %}" alt="Empty" style="width: 72px; opacity: 0.5;" class="mb-3">
             <h5 class="fw-bold text-dark mb-1">ยังไม่มีข้อมูลนักศึกษาในระบบ</h5>
             <p class="text-muted small mb-4">เริ่มต้นด้วยการเพิ่มข้อมูลนักศึกษาคนแรกเข้าสู่ระบบ</p>
+            {% if user.is_authenticated %}
             <a href="{% url 'student_create' %}" class="btn btn-primary">
                 <i class="fa-solid fa-plus me-1"></i> เพิ่มนักศึกษาใหม่
             </a>
+            {% endif %}
         </div>
         {% endif %}
     </div>

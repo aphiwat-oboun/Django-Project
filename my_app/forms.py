@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.models import User
 from .models import Student, Subject
 
 class StudentForm(forms.ModelForm):
@@ -56,3 +57,42 @@ class SubjectForm(forms.ModelForm):
                 'class': 'form-select',
             }),
         }
+
+
+class RegisterForm(forms.ModelForm):
+    password = forms.CharField(
+        label="รหัสผ่าน (Password)",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'กำหนดรหัสผ่านอย่างน้อย 6 ตัวอักษร'})
+    )
+    confirm_password = forms.CharField(
+        label="ยืนยันรหัสผ่าน (Confirm Password)",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'กรอกรหัสผ่านอีกครั้ง'})
+    )
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+        labels = {
+            'username': 'ชื่อผู้ใช้งาน (Username)',
+            'email': 'อีเมล (Email)',
+        }
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'เช่น student_dev'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'example@university.ac.th'}),
+        }
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError("ชื่อผู้ใช้นี้มีอยู่ในระบบแล้ว กรุณาเลือกชื่ออื่น")
+        return username
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if password and confirm_password and password != confirm_password:
+            self.add_error('confirm_password', "รหัสผ่านทั้งสองช่องไม่ตรงกัน")
+
+        return cleaned_data

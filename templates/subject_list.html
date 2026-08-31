@@ -18,12 +18,14 @@
         </h2>
         <p class="text-muted small m-0">โครงสร้างหลักสูตรรายวิชา หมวดหมู่วิชา และการจัดการหลักสูตร</p>
     </div>
+    {% if user.is_authenticated %}
     <div class="mt-3 mt-md-0">
         <a href="{% url 'subject_create' %}" class="btn btn-primary shadow-sm">
             <i class="fa-solid fa-plus me-1"></i>
             <span>เพิ่มรายวิชาใหม่</span>
         </a>
     </div>
+    {% endif %}
 </div>
 
 <!-- Stat Cards -->
@@ -121,7 +123,9 @@
                         <th style="width: 15%">รหัสวิชา</th>
                         <th style="width: 45%">ชื่อรายวิชา</th>
                         <th style="width: 20%">หมวดหมู่วิชา</th>
+                        {% if user.is_authenticated %}
                         <th class="text-center" style="width: 15%">จัดการข้อมูล</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -149,6 +153,7 @@
                                 <i class="fa-solid fa-tag me-1"></i>{{ subject.category.category_name }}
                             </span>
                         </td>
+                        {% if user.is_authenticated %}
                         <td class="text-center">
                             <div class="d-inline-flex gap-1">
                                 <a href="{% url 'subject_detail' pk=subject.pk %}" class="action-btn btn-view" title="ดูรายละเอียด">
@@ -162,6 +167,7 @@
                                 </a>
                             </div>
                         </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -222,9 +228,11 @@
             <i class="fa-solid fa-book-open text-muted mb-3 fs-1"></i>
             <h5 class="fw-bold text-dark mb-1">ไม่พบข้อมูลรายวิชาในระบบ</h5>
             <p class="text-muted small mb-4">เริ่มต้นด้วยการเพิ่มข้อมูลรายวิชาแรกเข้าสู่ระบบหลักสูตร</p>
+            {% if user.is_authenticated %}
             <a href="{% url 'subject_create' %}" class="btn btn-primary">
                 <i class="fa-solid fa-plus me-1"></i> เพิ่มรายวิชาใหม่
             </a>
+            {% endif %}
         </div>
         {% endif %}
     </div>

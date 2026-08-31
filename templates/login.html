@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center py-4">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-5">
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+            <!-- Header with Gradient -->
+            <div class="card-header gradient-primary text-white py-4 px-4 text-center">
+                <div class="d-inline-flex align-items-center justify-content-center bg-white bg-opacity-25 rounded-circle mb-3" style="width: 64px; height: 64px; border: 2px solid rgba(255, 255, 255, 0.4);">
+                    <i class="fa-solid fa-right-to-bracket fs-2 text-white"></i>
+                </div>
+                <h3 class="h4 fw-bold mb-1">เข้าสู่ระบบ (Sign In)</h3>
+                <p class="small text-white-50 mb-0">ระบบจัดการข้อมูลนักศึกษาและรายวิชา</p>
+            </div>
+
+            <!-- Body -->
+            <div class="card-body p-4 p-md-5">
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger mb-4" role="alert">
+                        <i class="fa-solid fa-circle-exclamation me-1"></i>
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <form method="post" autocomplete="off">
+                    {% csrf_token %}
+                    
+                    <!-- Username Field -->
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}" class="form-label">
+                            <i class="fa-solid fa-user me-1 text-muted"></i> ชื่อผู้ใช้งาน (Username)
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-at"></i></span>
+                            <input type="text" name="username" class="form-control" placeholder="กรอกชื่อผู้ใช้ เช่น admin" autofocus required id="{{ form.username.id_for_label }}">
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label for="{{ form.password.id_for_label }}" class="form-label mb-0">
+                                <i class="fa-solid fa-lock me-1 text-muted"></i> รหัสผ่าน (Password)
+                            </label>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-key"></i></span>
+                            <input type="password" name="password" class="form-control" placeholder="กรอกรหัสผ่าน" required id="{{ form.password.id_for_label }}">
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm mb-3">
+                        <i class="fa-solid fa-right-to-bracket me-1"></i> เข้าสู่ระบบ
+                    </button>
+                </form>
+
+                <div class="position-relative my-4 text-center">
+                    <hr class="text-muted">
+                    <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">หรือเข้าสู่ระบบด้วย</span>
+                </div>
+
+                <!-- Social Login Buttons -->
+                <div class="d-grid gap-2 mb-4">
+                    <a href="{% url 'social_login' provider='google' %}" class="btn btn-outline-dark d-flex align-items-center justify-content-center gap-2 py-2">
+                        <i class="fa-brands fa-google text-danger"></i> เข้าสู่ระบบด้วย Google Account
+                    </a>
+                    <a href="{% url 'social_login' provider='line' %}" class="btn btn-outline-success d-flex align-items-center justify-content-center gap-2 py-2">
+                        <i class="fa-brands fa-line text-success"></i> เข้าสู่ระบบด้วย LINE
+                    </a>
+                </div>
+
+                <!-- Register Link -->
+                <div class="text-center pt-2 border-top">
+                    <span class="text-muted small">ยังไม่มีบัญชีผู้ใช้งาน?</span>
+                    <a href="{% url 'register' %}" class="fw-semibold text-primary text-decoration-none ms-1 small">
+                        สมัครสมาชิกใหม่
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

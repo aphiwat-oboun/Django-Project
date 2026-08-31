@@ -6,9 +6,14 @@ from django.contrib import messages
 from django.db.models import Q
 # pyrefly: ignore [missing-import]
 from django.core.paginator import Paginator
+# pyrefly: ignore [missing-import]
+from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 import datetime
 from .models import Student, Major, Category, Subject
-from .forms import StudentForm, SubjectForm
+from .forms import StudentForm, SubjectForm, RegisterForm
 
 def home(request):
     q = request.GET.get("q", "").strip()
@@ -78,6 +83,7 @@ def student_detail(request, pk):
     return render(request, "student_detail.html", context)
 
 
+@login_required
 def student_create(request):
     if request.method == "POST":
         form = StudentForm(request.POST)
@@ -99,6 +105,7 @@ def student_create(request):
     return render(request, "student_form.html", context)
 
 
+@login_required
 def student_update(request, pk):
     student = get_object_or_404(Student, pk=pk)
     if request.method == "POST":
@@ -122,6 +129,7 @@ def student_update(request, pk):
     return render(request, "student_form.html", context)
 
 
+@login_required
 def student_delete(request, pk):
     student = get_object_or_404(Student, pk=pk)
     if request.method == "POST":
@@ -188,6 +196,7 @@ def subject_detail(request, pk):
     return render(request, "subject_detail.html", context)
 
 
+@login_required
 def subject_create(request):
     if request.method == "POST":
         form = SubjectForm(request.POST)
@@ -209,6 +218,7 @@ def subject_create(request):
     return render(request, "subject_form.html", context)
 
 
+@login_required
 def subject_update(request, pk):
     subject = get_object_or_404(Subject, pk=pk)
     if request.method == "POST":
@@ -232,6 +242,7 @@ def subject_update(request, pk):
     return render(request, "subject_form.html", context)
 
 
+@login_required
 def subject_delete(request, pk):
     subject = get_object_or_404(Subject, pk=pk)
     if request.method == "POST":
@@ -246,3 +257,107 @@ def subject_delete(request, pk):
         "date": datetime.datetime.today(),
     }
     return render(request, "subject_confirm_delete.html", context)
+
+
+# ---------------- Authentication (Login / Register / Logout / Social Auth) ----------------
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get("username")
+            password = form.cleaned_data.get("password")
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, f"ยินดีต้อนรับคุณ {user.username} เข้าสู่ระบบสำเร็จ")
+                next_url = request.GET.get("next")
+                if next_url:
+                    return redirect(next_url)
+                return redirect("home")
+            else:
+                messages.error(request, "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง")
+        else:
+            messages.error(request, "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง")
+    else:
+        form = AuthenticationForm()
+
+    context = {
+        "title": "เข้าสู่ระบบ (Login)",
+        "form": form,
+        "date": datetime.datetime.today(),
+    }
+    return render(request, "login.html", context)
+
+
+def register_view(request):
+    if request.user.is_authenticated:
+        return redirect("home")
+
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data.get("password"))
+            user.save()
+            # Log in automatically after registration
+            login(request, user)
+            messages.success(request, f"ยินดีต้อนรับคุณ {user.username} สมัครสมาชิกและเข้าสู่ระบบเรียบร้อยแล้ว")
+            return redirect("home")
+        else:
+            messages.error(request, "กรุณาตรวจสอบข้อมูลการสมัครสมาชิกอีกครั้ง")
+    else:
+        form = RegisterForm()
+
+    context = {
+        "title": "สมัครสมาชิก (Register)",
+        "form": form,
+        "date": datetime.datetime.today(),
+    }
+    return render(request, "register.html", context)
+
+
+def social_login_view(request, provider):
+    """
+    Simulate instant social registration & login with Google and LINE Account
+    """
+    if provider == "google":
+        username = "google_user"
+        email = "user@gmail.com"
+        first_name = "Google"
+        last_name = "Account"
+        provider_name = "Google Account"
+    elif provider == "line":
+        username = "line_user"
+        email = "user@line.me"
+        first_name = "LINE"
+        last_name = "Account"
+        provider_name = "LINE"
+    else:
+        messages.error(request, "ไม่พบผู้ให้บริการล็อกอินนี้")
+        return redirect("login")
+
+    user, created = User.objects.get_or_create(
+        username=username,
+        defaults={
+            "email": email,
+            "first_name": first_name,
+            "last_name": last_name,
+        }
+    )
+    login(request, user)
+    if created:
+        messages.success(request, f"สมัครสมาชิกและเข้าสู่ระบบด้วย {provider_name} สำเร็จ")
+    else:
+        messages.success(request, f"เข้าสู่ระบบด้วย {provider_name} สำเร็จ")
+
+    return redirect("home")
+
+
+def logout_view(request):
+    if request.user.is_authenticated:
+        logout(request)
+        messages.success(request, "ออกจากระบบเรียบร้อยแล้ว")
+    return redirect("login")

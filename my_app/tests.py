@@ -1,11 +1,14 @@
 from django.test import TestCase, Client
 from django.urls import reverse
+from django.contrib.auth.models import User
 from .models import Student, Major, Category, Subject
-from .forms import StudentForm, SubjectForm
+from .forms import StudentForm, SubjectForm, RegisterForm
 
 class StudentCRUDTestCase(TestCase):
     def setUp(self):
         self.client = Client()
+        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.client.force_login(self.user)
         self.major = Major.objects.create(major_name="Computer Science")
         self.student = Student.objects.create(
             prefix_name="1",
@@ -76,6 +79,8 @@ class StudentCRUDTestCase(TestCase):
 class SubjectCRUDTestCase(TestCase):
     def setUp(self):
         self.client = Client()
+        self.user = User.objects.create_user(username="testuser_subject", password="password123")
+        self.client.force_login(self.user)
         self.category = Category.objects.create(category_name="วิชาเฉพาะสาขา")
         self.subject = Subject.objects.create(
             subject_code="CS101",
@@ -138,3 +143,65 @@ class SubjectCRUDTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Subject.objects.filter(pk=pk).exists())
+
+
+class AuthTestCase(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = User.objects.create_user(username="adminuser", password="securepassword123")
+
+    def test_login_page_get(self):
+        response = self.client.get(reverse("login"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "login.html")
+
+    def test_login_success(self):
+        response = self.client.post(reverse("login"), {
+            "username": "adminuser",
+            "password": "securepassword123",
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context["user"].is_authenticated)
+
+    def test_login_invalid_password(self):
+        response = self.client.post(reverse("login"), {
+            "username": "adminuser",
+            "password": "wrongpassword",
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context["user"].is_authenticated)
+        self.assertContains(response, "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง")
+
+    def test_register_page_get(self):
+        response = self.client.get(reverse("register"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "register.html")
+
+    def test_register_success(self):
+        response = self.client.post(reverse("register"), {
+            "username": "new_student",
+            "email": "student@university.ac.th",
+            "password": "mypassword123",
+            "confirm_password": "mypassword123",
+        }, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(User.objects.filter(username="new_student").exists())
+        self.assertTrue(response.context["user"].is_authenticated)
+
+    def test_social_login_google(self):
+        response = self.client.get(reverse("social_login", kwargs={"provider": "google"}), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context["user"].is_authenticated)
+        self.assertEqual(response.context["user"].username, "google_user")
+
+    def test_social_login_line(self):
+        response = self.client.get(reverse("social_login", kwargs={"provider": "line"}), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context["user"].is_authenticated)
+        self.assertEqual(response.context["user"].username, "line_user")
+
+    def test_logout(self):
+        self.client.force_login(self.user)
+        response = self.client.get(reverse("logout"), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.context["user"].is_authenticated)
