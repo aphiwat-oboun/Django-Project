@@ -98,9 +98,11 @@
                     <div class="col-12">
                         <div class="detail-tile">
                             <div class="detail-tile-label"><i class="fa-solid fa-building-columns me-1 text-muted"></i> สาขาวิชา (Major)</div>
-                            <div class="detail-tile-value d-flex align-items-center gap-2">
-                                <span>{{ student.major.major_name|default:student.major }}</span>
-                                <span class="badge bg-indigo text-primary bg-opacity-10 rounded-pill px-2 py-1 small">Active Program</span>
+                            <div class="detail-tile-value d-flex flex-wrap align-items-center justify-content-between gap-2">
+                                <span class="fw-bold text-dark">{{ student.major.major_name|default:student.major }}</span>
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-3 py-1.5 small fw-semibold">
+                                    <i class="fa-solid fa-circle-check me-1"></i>หลักสูตรปกติ (Active)
+                                </span>
                             </div>
                         </div>
                     </div>
