@@ -163,14 +163,11 @@ def enroll_create(request, student_id):
             subject = form.cleaned_data.get("subject")
             semester = form.cleaned_data.get("semester")
 
-            # Check for duplicate enrollment in same semester
-            if Enrolls.objects.filter(student=student, subject=subject, semester=semester).exists():
-                messages.warning(request, f"นักศึกษาได้ลงทะเบียนวิชา {subject.subject_code} ในภาคเรียน {semester} ไปแล้ว")
-            else:
-                enroll = form.save(commit=False)
-                enroll.student = student
-                enroll.save()
-                messages.success(request, f"ลงทะเบียนวิชา {subject.subject_code} ({subject.subject_name}) ภาคเรียน {semester} สำเร็จ")
+            # Allows enrolling subject repeatedly as requested
+            enroll = form.save(commit=False)
+            enroll.student = student
+            enroll.save()
+            messages.success(request, f"ลงทะเบียนวิชา {subject.subject_code} ({subject.subject_name}) ภาคเรียน {semester} สำเร็จ")
         else:
             messages.error(request, "กรุณาเลือกรายวิชาและภาคเรียนให้ถูกต้อง")
 
@@ -178,15 +175,35 @@ def enroll_create(request, student_id):
 
 
 @login_required
+def enroll_student_to_subject(request, subject_id):
+    subject = get_object_or_404(Subject, pk=subject_id)
+    if request.method == "POST":
+        student_id = request.POST.get("student")
+        semester = request.POST.get("semester")
+        student = get_object_or_404(Student, pk=student_id)
+
+        enroll = Enrolls.objects.create(
+            student=student,
+            subject=subject,
+            semester=semester
+        )
+        messages.success(request, f"เพิ่มนักศึกษา {student.fname} {student.lname} ลงทะเบียนวิชา {subject.subject_code} ภาคเรียน {semester} สำเร็จ")
+
+    return redirect("subject_detail", pk=subject.pk)
+
+
+@login_required
 def enroll_delete(request, pk):
     enroll = get_object_or_404(Enrolls.objects.select_related("student", "subject"), pk=pk)
     student_id = enroll.student.pk
-    if request.method == "POST":
-        subject_name = f"{enroll.subject.subject_code} - {enroll.subject.subject_name}"
-        semester = enroll.semester
-        enroll.delete()
-        messages.success(request, f"ถอนการลงทะเบียนวิชา {subject_name} (ภาคเรียน {semester}) เรียบร้อยแล้ว")
+    next_url = request.POST.get("next") or request.GET.get("next")
+    subject_name = f"{enroll.subject.subject_code} - {enroll.subject.subject_name}"
+    semester = enroll.semester
+    enroll.delete()
+    messages.success(request, f"ถอนการลงทะเบียนวิชา {subject_name} (ภาคเรียน {semester}) เรียบร้อยแล้ว")
 
+    if next_url:
+        return redirect(next_url)
     return redirect("student_detail", pk=student_id)
 
 
@@ -231,10 +248,15 @@ def subject_list(request):
 
 def subject_detail(request, pk):
     subject = get_object_or_404(Subject.objects.select_related("category"), pk=pk)
+    enrolls = subject.enrolls.select_related("student", "student__major").all().order_by("semester", "student__stu_id")
+    all_students = Student.objects.select_related("major").all().order_by("stu_id")
 
     context = {
         "title": f"ข้อมูลรายวิชา: {subject.subject_code} - {subject.subject_name}",
         "subject": subject,
+        "enrolls": enrolls,
+        "all_students": all_students,
+        "semesters": SEMESTER,
         "date": datetime.datetime.today(),
     }
     return render(request, "subject_detail.html", context)

@@ -20,6 +20,7 @@ urlpatterns = [
 
     # Enrollment (การลงทะเบียนเรียน) URLs
     path('students/<int:student_id>/enroll/', views.enroll_create, name='enroll_create'),
+    path('subjects/<int:subject_id>/enroll/', views.enroll_student_to_subject, name='enroll_student_to_subject'),
     path('enrolls/<int:pk>/delete/', views.enroll_delete, name='enroll_delete'),
 
     # Subject CRUD URLs
