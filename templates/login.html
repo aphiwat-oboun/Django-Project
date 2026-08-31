@@ -3,26 +3,270 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center align-items-center py-4">
-    <div class="col-12 col-sm-10 col-md-8 col-lg-5">
-        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
-            <!-- Header with Gradient -->
-            <div class="card-header gradient-primary text-white py-4 px-4 text-center">
-                <div class="d-inline-flex align-items-center justify-content-center bg-white bg-opacity-25 rounded-circle mb-3" style="width: 64px; height: 64px; border: 2px solid rgba(255, 255, 255, 0.4);">
-                    <i class="fa-solid fa-right-to-bracket fs-2 text-white"></i>
+<style>
+  .auth-page-wrapper {
+    min-height: calc(100vh - 180px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    position: relative;
+  }
+
+  .auth-bg-blob-1 {
+    position: absolute;
+    top: 5%;
+    left: 15%;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, rgba(99, 102, 241, 0) 70%);
+    border-radius: 50%;
+    filter: blur(40px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .auth-bg-blob-2 {
+    position: absolute;
+    bottom: 5%;
+    right: 15%;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(236, 72, 153, 0.12) 0%, rgba(236, 72, 153, 0) 70%);
+    border-radius: 50%;
+    filter: blur(45px);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .auth-card-modern {
+    background: #ffffff;
+    border-radius: 24px;
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(241, 245, 249, 0.6);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .auth-card-modern:hover {
+    box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.12), 0 0 0 1px rgba(226, 232, 240, 0.9);
+  }
+
+  .auth-hero-banner {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #4338ca 80%, #6366f1 100%);
+    padding: 3rem 2rem 2.5rem 2rem;
+    color: #ffffff;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .auth-hero-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .auth-icon-badge {
+    width: 68px;
+    height: 68px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.85rem;
+    color: #ffffff;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+  }
+
+  .auth-card-modern:hover .auth-icon-badge {
+    transform: scale(1.06) rotate(-3deg);
+  }
+
+  .auth-input-container {
+    position: relative;
+  }
+
+  .auth-input-container .form-control {
+    border-radius: 12px !important;
+    border: 1.5px solid #e2e8f0 !important;
+    padding: 0.75rem 1rem 0.75rem 2.75rem !important;
+    font-size: 0.95rem !important;
+    color: #0f172a !important;
+    background-color: #f8fafc !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  .auth-input-container .form-control:focus {
+    background-color: #ffffff !important;
+    border-color: #6366f1 !important;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12) !important;
+  }
+
+  .auth-input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 1rem;
+    transition: color 0.2s ease;
+    z-index: 4;
+  }
+
+  .auth-input-container .form-control:focus ~ .auth-input-icon {
+    color: #6366f1;
+  }
+
+  .btn-auth-submit {
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #818cf8 100%);
+    border: none !important;
+    color: #ffffff !important;
+    font-weight: 600;
+    padding: 0.85rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+    box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-auth-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -5px rgba(79, 70, 229, 0.55);
+    opacity: 0.96;
+  }
+
+  .btn-auth-submit:active {
+    transform: translateY(0);
+  }
+
+  .btn-social-auth {
+    border-radius: 12px;
+    padding: 0.75rem 1.25rem;
+    font-weight: 500;
+    font-size: 0.925rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+
+  .btn-social-google {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    color: #1e293b;
+  }
+
+  .btn-social-google:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #0f172a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .btn-social-line {
+    background: #06c755;
+    border: 1.5px solid #06c755;
+    color: #ffffff;
+  }
+
+  .btn-social-line:hover {
+    background: #05b34c;
+    border-color: #05b34c;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(6, 199, 85, 0.25);
+  }
+
+  .auth-divider-line {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.8rem;
+    margin: 1.5rem 0;
+  }
+
+  .auth-divider-line::before,
+  .auth-divider-line::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .auth-divider-line:not(:empty)::before {
+    margin-right: 0.85em;
+  }
+
+  .auth-divider-line:not(:empty)::after {
+    margin-left: 0.85em;
+  }
+
+  .toggle-password-btn {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    z-index: 4;
+    font-size: 0.95rem;
+    padding: 0;
+  }
+
+  .toggle-password-btn:hover {
+    color: #6366f1;
+  }
+</style>
+
+<div class="auth-page-wrapper">
+    <!-- Ambient Blur Shapes -->
+    <div class="auth-bg-blob-1"></div>
+    <div class="auth-bg-blob-2"></div>
+
+    <div class="col-12 col-sm-10 col-md-8 col-lg-5 col-xl-4">
+        <div class="auth-card-modern">
+            <!-- Hero Header with Deep Purple & Indigo Gradient -->
+            <div class="auth-hero-banner">
+                <div class="auth-icon-badge">
+                    <i class="fa-solid fa-lock-open"></i>
                 </div>
-                <h3 class="h4 fw-bold mb-1">เข้าสู่ระบบ (Sign In)</h3>
-                <p class="small text-white-50 mb-0">ระบบจัดการข้อมูลนักศึกษาและรายวิชา</p>
+                <h2 class="h3 fw-bold mb-1 text-white" style="letter-spacing: -0.02em;">เข้าสู่ระบบ (Sign In)</h2>
+                <p class="text-white-50 small mb-0">ระบบจัดการข้อมูลนักศึกษาและหลักสูตรรายวิชา</p>
             </div>
 
-            <!-- Body -->
-            <div class="card-body p-4 p-md-5">
+            <!-- Card Body -->
+            <div class="p-4 p-md-5">
                 {% if form.non_field_errors %}
-                    <div class="alert alert-danger mb-4" role="alert">
-                        <i class="fa-solid fa-circle-exclamation me-1"></i>
-                        {% for error in form.non_field_errors %}
-                            {{ error }}
-                        {% endfor %}
+                    <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+                        <i class="fa-solid fa-circle-exclamation me-2 fs-5"></i>
+                        <div>
+                            {% for error in form.non_field_errors %}
+                                <p class="mb-0 small">{{ error }}</p>
+                            {% endfor %}
+                        </div>
                     </div>
                 {% endif %}
 
@@ -31,53 +275,61 @@
                     
                     <!-- Username Field -->
                     <div class="mb-3">
-                        <label for="{{ form.username.id_for_label }}" class="form-label">
-                            <i class="fa-solid fa-user me-1 text-muted"></i> ชื่อผู้ใช้งาน (Username)
+                        <label for="{{ form.username.id_for_label }}" class="form-label text-slate-700 fw-semibold mb-2" style="font-size: 0.875rem;">
+                            ชื่อผู้ใช้งาน (Username)
                         </label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-at"></i></span>
-                            <input type="text" name="username" class="form-control" placeholder="กรอกชื่อผู้ใช้ เช่น admin" autofocus required id="{{ form.username.id_for_label }}">
+                        <div class="auth-input-container">
+                            <input type="text" name="username" class="form-control" placeholder="กรอกชื่อผู้ใช้งานของคุณ" autofocus required id="{{ form.username.id_for_label }}">
+                            <i class="fa-solid fa-user auth-input-icon"></i>
                         </div>
                     </div>
 
                     <!-- Password Field -->
                     <div class="mb-4">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <label for="{{ form.password.id_for_label }}" class="form-label mb-0">
-                                <i class="fa-solid fa-lock me-1 text-muted"></i> รหัสผ่าน (Password)
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label for="{{ form.password.id_for_label }}" class="form-label text-slate-700 fw-semibold mb-0" style="font-size: 0.875rem;">
+                                รหัสผ่าน (Password)
                             </label>
                         </div>
-                        <div class="input-group">
-                            <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-key"></i></span>
-                            <input type="password" name="password" class="form-control" placeholder="กรอกรหัสผ่าน" required id="{{ form.password.id_for_label }}">
+                        <div class="auth-input-container">
+                            <input type="password" name="password" id="id_password_input" class="form-control pe-5" placeholder="กรอกรหัสผ่านเข้าสู่ระบบ" required>
+                            <i class="fa-solid fa-key auth-input-icon"></i>
+                            <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('id_password_input', this)" title="แสดง/ซ่อนรหัสผ่าน">
+                                <i class="fa-solid fa-eye"></i>
+                            </button>
                         </div>
                     </div>
 
                     <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm mb-3">
-                        <i class="fa-solid fa-right-to-bracket me-1"></i> เข้าสู่ระบบ
+                    <button type="submit" class="btn-auth-submit">
+                        <span>เข้าสู่ระบบ</span>
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i>
                     </button>
                 </form>
 
-                <div class="position-relative my-4 text-center">
-                    <hr class="text-muted">
-                    <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small">หรือเข้าสู่ระบบด้วย</span>
-                </div>
+                <div class="auth-divider-line">หรือเข้าสู่ระบบด่วนด้วย</div>
 
                 <!-- Social Login Buttons -->
                 <div class="d-grid gap-2 mb-4">
-                    <a href="{% url 'social_login' provider='google' %}" class="btn btn-outline-dark d-flex align-items-center justify-content-center gap-2 py-2">
-                        <i class="fa-brands fa-google text-danger"></i> เข้าสู่ระบบด้วย Google Account
+                    <a href="{% url 'social_login' provider='google' %}" class="btn-social-auth btn-social-google">
+                        <svg width="18" height="18" viewBox="0 0 48 48">
+                            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.55 10.78l7.98-6.19z"/>
+                            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                        </svg>
+                        <span>เข้าสู่ระบบด้วย Google Account</span>
                     </a>
-                    <a href="{% url 'social_login' provider='line' %}" class="btn btn-outline-success d-flex align-items-center justify-content-center gap-2 py-2">
-                        <i class="fa-brands fa-line text-success"></i> เข้าสู่ระบบด้วย LINE
+                    <a href="{% url 'social_login' provider='line' %}" class="btn-social-auth btn-social-line">
+                        <i class="fa-brands fa-line fs-5"></i>
+                        <span>เข้าสู่ระบบด้วย LINE</span>
                     </a>
                 </div>
 
-                <!-- Register Link -->
-                <div class="text-center pt-2 border-top">
-                    <span class="text-muted small">ยังไม่มีบัญชีผู้ใช้งาน?</span>
-                    <a href="{% url 'register' %}" class="fw-semibold text-primary text-decoration-none ms-1 small">
+                <!-- Footer Link -->
+                <div class="text-center pt-3 border-top">
+                    <span class="text-muted" style="font-size: 0.875rem;">ยังไม่มีบัญชีผู้ใช้งาน?</span>
+                    <a href="{% url 'register' %}" class="fw-bold text-primary text-decoration-none ms-1" style="font-size: 0.875rem;">
                         สมัครสมาชิกใหม่
                     </a>
                 </div>
@@ -85,4 +337,20 @@
         </div>
     </div>
 </div>
+
+<script>
+function togglePasswordVisibility(inputId, btn) {
+    var input = document.getElementById(inputId);
+    var icon = btn.querySelector('i');
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = "password";
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+</script>
 {% endblock %}
