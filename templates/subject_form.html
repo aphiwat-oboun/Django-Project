@@ -29,13 +29,13 @@
 <div class="row justify-content-center">
     <div class="col-12 col-lg-8">
         <div class="card shadow-sm border-0 mb-5">
-            <div class="card-header bg-primary py-3 px-4">
+            <div class="card-header gradient-primary py-3 px-4">
                 <div class="d-flex align-items-center justify-content-between text-white">
                     <div class="d-flex align-items-center gap-2">
                         <i class="fa-solid fa-book-bookmark fs-5"></i>
                         <span class="fw-semibold fs-6">
                             {% if action == 'create' %}
-                                แบบฟอร์มบันทึกรายวิชาใหม่ (New Subject Form)
+                                ฟอร์มกรอกข้อมูลรายวิชา (New Subject Form)
                             {% else %}
                                 แก้ไขข้อมูลวิชา: {{ subject.subject_code }} - {{ subject.subject_name }}
                             {% endif %}
@@ -64,7 +64,7 @@
                     <div class="row g-4 mb-4">
                         <!-- Subject Code -->
                         <div class="col-12 col-md-6">
-                            <label for="{{ form.subject_code.id_for_label }}" class="form-label fw-semibold">
+                            <label for="{{ form.subject_code.id_for_label }}" class="form-label">
                                 {{ form.subject_code.label }} <span class="text-danger">*</span>
                             </label>
                             <div class="input-group">
@@ -76,13 +76,13 @@
                                     <i class="fa-solid fa-circle-xmark me-1"></i>{{ form.subject_code.errors.0 }}
                                 </div>
                             {% else %}
-                                <div class="text-muted small mt-1">เช่น CS101, MA111, GE101</div>
+                                <div class="text-muted small mt-1">ตัวอย่าง: CS101, MA111, GE101</div>
                             {% endif %}
                         </div>
 
                         <!-- Category -->
                         <div class="col-12 col-md-6">
-                            <label for="{{ form.category.id_for_label }}" class="form-label fw-semibold">
+                            <label for="{{ form.category.id_for_label }}" class="form-label">
                                 {{ form.category.label }} <span class="text-danger">*</span>
                             </label>
                             <div class="input-group">
@@ -98,7 +98,7 @@
 
                         <!-- Subject Name -->
                         <div class="col-12">
-                            <label for="{{ form.subject_name.id_for_label }}" class="form-label fw-semibold">
+                            <label for="{{ form.subject_name.id_for_label }}" class="form-label">
                                 {{ form.subject_name.label }} <span class="text-danger">*</span>
                             </label>
                             <div class="input-group">
@@ -110,7 +110,7 @@
                                     <i class="fa-solid fa-circle-xmark me-1"></i>{{ form.subject_name.errors.0 }}
                                 </div>
                             {% else %}
-                                <div class="text-muted small mt-1">เช่น พื้นฐานวิทยาการคอมพิวเตอร์</div>
+                                <div class="text-muted small mt-1">ตัวอย่าง: พื้นฐานวิทยาการคอมพิวเตอร์</div>
                             {% endif %}
                         </div>
                     </div>

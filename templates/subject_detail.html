@@ -16,7 +16,7 @@
         <h2 class="fw-bold text-slate-800 m-0">ข้อมูลประจำวิชา</h2>
     </div>
     <div class="d-flex gap-2 mt-3 mt-md-0">
-        <a href="{% url 'subject_update' pk=subject.pk %}" class="btn btn-warning text-dark">
+        <a href="{% url 'subject_update' pk=subject.pk %}" class="btn btn-warning text-white">
             <i class="fa-solid fa-pen-to-square me-1"></i> แก้ไขข้อมูล
         </a>
         <a href="{% url 'subject_delete' pk=subject.pk %}" class="btn btn-danger">
@@ -29,14 +29,14 @@
     <div class="col-12 col-lg-9">
         <div class="card shadow-sm border-0 mb-4 overflow-hidden">
             <!-- Hero Header -->
-            <div class="bg-primary text-white p-4 p-md-5">
-                <div class="d-flex flex-wrap align-items-center gap-4 position-relative">
-                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width: 72px; height: 72px;">
+            <div class="profile-hero">
+                <div class="d-flex flex-wrap align-items-center gap-4 position-relative" style="z-index: 2;">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width: 72px; height: 72px; border: 3px solid rgba(255, 255, 255, 0.4);">
                         <i class="fa-solid fa-book-bookmark fs-1 text-white"></i>
                     </div>
                     <div>
                         <div class="d-flex align-items-center gap-2 mb-1">
-                            <span class="badge bg-white text-primary rounded-pill px-3 py-1 font-monospace fw-bold">
+                            <span class="badge bg-primary rounded-pill px-3 py-1 font-monospace" style="letter-spacing: 0.05em;">
                                 {{ subject.subject_code }}
                             </span>
                             <span class="badge bg-success bg-opacity-75 rounded-pill px-3 py-1">
@@ -46,7 +46,7 @@
                         <h3 class="fw-bold text-white mb-1">
                             {{ subject.subject_name }}
                         </h3>
-                        <div class="text-white-50 small">
+                        <div class="text-indigo-200" style="color: #c7d2fe;">
                             <i class="fa-solid fa-tag me-1"></i> โครงสร้างหลักสูตรรายวิชา
                         </div>
                     </div>
@@ -61,21 +61,21 @@
 
                 <div class="row g-3 mb-4">
                     <div class="col-12 col-md-6">
-                        <div class="p-3 bg-light rounded-3 border">
-                            <div class="text-muted small mb-1"><i class="fa-solid fa-barcode me-1"></i> รหัสวิชา</div>
-                            <div class="fw-bold text-primary font-monospace fs-5">{{ subject.subject_code }}</div>
+                        <div class="detail-tile">
+                            <div class="detail-tile-label"><i class="fa-solid fa-barcode me-1 text-muted"></i> รหัสวิชา</div>
+                            <div class="detail-tile-value text-primary font-monospace">{{ subject.subject_code }}</div>
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
-                        <div class="p-3 bg-light rounded-3 border">
-                            <div class="text-muted small mb-1"><i class="fa-solid fa-tags me-1"></i> หมวดหมู่วิชา</div>
-                            <div class="fw-semibold text-dark fs-6">{{ subject.category.category_name }}</div>
+                        <div class="detail-tile">
+                            <div class="detail-tile-label"><i class="fa-solid fa-tags me-1 text-muted"></i> หมวดหมู่วิชา</div>
+                            <div class="detail-tile-value">{{ subject.category.category_name }}</div>
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="p-3 bg-light rounded-3 border">
-                            <div class="text-muted small mb-1"><i class="fa-solid fa-book-open me-1"></i> ชื่อรายวิชาเรียน</div>
-                            <div class="fw-bold text-dark fs-5">{{ subject.subject_name }}</div>
+                        <div class="detail-tile">
+                            <div class="detail-tile-label"><i class="fa-solid fa-book-open me-1 text-muted"></i> ชื่อรายวิชาเรียน</div>
+                            <div class="detail-tile-value text-dark">{{ subject.subject_name }}</div>
                         </div>
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                         <i class="fa-solid fa-arrow-left me-1"></i> กลับหน้ารายการ
                     </a>
                     <div class="d-flex gap-2">
-                        <a href="{% url 'subject_update' pk=subject.pk %}" class="btn btn-warning text-dark">
+                        <a href="{% url 'subject_update' pk=subject.pk %}" class="btn btn-warning text-white">
                             <i class="fa-solid fa-pen-to-square me-1"></i> แก้ไขข้อมูล
                         </a>
                         <a href="{% url 'subject_delete' pk=subject.pk %}" class="btn btn-danger">

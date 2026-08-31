@@ -3,22 +3,26 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<!-- Breadcrumb -->
-<div class="breadcrumb-ref">
-    <a href="{% url 'home' %}"><i class="fa-solid fa-house"></i> หน้าหลัก</a>
-    <span class="separator">&rsaquo;</span>
-    <a href="{% url 'subject_list' %}">รายวิชาทั้งหมด</a>
-    <span class="separator">&rsaquo;</span>
-    <a href="{% url 'subject_detail' pk=subject.pk %}">{{ subject.subject_code }}</a>
-    <span class="separator">&rsaquo;</span>
-    <span class="current">{{ title }}</span>
+<!-- Page Header & Breadcrumb -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fa-solid fa-house me-1"></i>หน้าหลัก</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'subject_list' %}">รายวิชาทั้งหมด</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'subject_detail' pk=subject.pk %}">{{ subject.subject_code }}</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-slate-800 m-0">ยืนยันการลบรายวิชา</h2>
+    </div>
 </div>
 
 <div class="row justify-content-center mt-3">
     <div class="col-12 col-md-8 col-lg-6">
         <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
-            <div class="bg-danger text-white py-4 px-4 text-center">
-                <div class="d-inline-flex align-items-center justify-content-center bg-white bg-opacity-25 rounded-circle mb-3" style="width: 64px; height: 64px;">
+            <div class="card-header gradient-danger text-white py-4 px-4 text-center">
+                <div class="d-inline-flex align-items-center justify-content-center bg-white bg-opacity-25 rounded-circle mb-3 pulse-danger" style="width: 64px; height: 64px;">
                     <i class="fa-solid fa-triangle-exclamation fs-2 text-white"></i>
                 </div>
                 <h3 class="h4 fw-bold mb-1">ยืนยันการลบรายวิชา</h3>
@@ -26,9 +30,9 @@
             </div>
             
             <div class="card-body p-4 p-md-5">
-                <div class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-25 text-danger rounded-3 py-3 px-4 mb-4">
+                <div class="alert alert-danger mb-4">
                     <p class="mb-0 fw-semibold">
-                        คุณแน่ใจหรือไม่ว่าต้องการลบรายวิชานี้ออกจากหลักสูตรอย่างถาวร?
+                        <i class="fa-solid fa-circle-exclamation me-1"></i> คุณแน่ใจหรือไม่ว่าต้องการลบรายวิชานี้ออกจากหลักสูตรอย่างถาวร?
                     </p>
                 </div>
 
@@ -48,11 +52,11 @@
                 <form method="post">
                     {% csrf_token %}
                     <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center pt-2">
-                        <a href="{% url 'subject_detail' pk=subject.pk %}" class="btn-form-cancel">
-                            <i class="fa-solid fa-arrow-left"></i> ยกเลิก
+                        <a href="{% url 'subject_detail' pk=subject.pk %}" class="btn btn-secondary">
+                            <i class="fa-solid fa-arrow-left me-1"></i> ยกเลิก
                         </a>
-                        <button type="submit" class="btn btn-danger px-4 py-2 fw-semibold rounded-3 d-inline-flex align-items-center gap-2 shadow-sm">
-                            <i class="fa-solid fa-trash-can"></i> ยืนยันการลบรายวิชา
+                        <button type="submit" class="btn btn-danger px-4">
+                            <i class="fa-solid fa-trash-can me-1"></i> ยืนยันการลบรายวิชา
                         </button>
                     </div>
                 </form>
