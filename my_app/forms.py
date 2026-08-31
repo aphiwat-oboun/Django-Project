@@ -61,12 +61,12 @@ class SubjectForm(forms.ModelForm):
 
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(
-        label="รหัสผ่าน (Password)",
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'กำหนดรหัสผ่านอย่างน้อย 6 ตัวอักษร'})
+        label="รหัสผ่าน",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'กำหนดรหัสผ่าน'})
     )
     confirm_password = forms.CharField(
-        label="ยืนยันรหัสผ่าน (Confirm Password)",
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'กรอกรหัสผ่านอีกครั้ง'})
+        label="ยืนยันรหัสผ่าน",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'ยืนยันรหัสผ่าน'})
     )
 
     class Meta:

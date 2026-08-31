@@ -81,7 +81,7 @@
                             <div class="sb-sidenav-menu-heading">ระบบข้อมูลนักศึกษา</div>
                             <a class="nav-link {% if request.resolver_match.url_name in 'home,student_detail,student_update,student_delete' %}active{% endif %}" href="{% url 'home' %}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
-                                รายชื่อนักศึกษาทั้งหมด
+                                รายชื่อนักศึกษา
                             </a>
                             {% if user.is_authenticated %}
                             <a class="nav-link {% if request.resolver_match.url_name == 'student_create' %}active{% endif %}" href="{% url 'student_create' %}">

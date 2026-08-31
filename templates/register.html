@@ -47,7 +47,7 @@
     overflow: hidden;
     position: relative;
     z-index: 1;
-    max-width: 480px;
+    max-width: 520px;
     width: 100%;
   }
 
@@ -221,6 +221,12 @@
   .toggle-password-btn:hover {
     color: #6366f1;
   }
+
+  .field-label-compact {
+    font-size: 0.8rem;
+    white-space: nowrap;
+    line-height: 1.2;
+  }
 </style>
 
 <div class="auth-page-wrapper">
@@ -256,8 +262,8 @@
                 
                 <!-- Username Field -->
                 <div class="mb-2">
-                    <label for="{{ form.username.id_for_label }}" class="form-label text-slate-700 fw-semibold mb-1" style="font-size: 0.8rem;">
-                        {{ form.username.label }} <span class="text-danger">*</span>
+                    <label for="{{ form.username.id_for_label }}" class="form-label text-slate-700 fw-semibold mb-1 field-label-compact">
+                        ชื่อผู้ใช้งาน (Username) <span class="text-danger">*</span>
                     </label>
                     <div class="auth-input-container">
                         <input type="text" name="username" class="form-control" placeholder="เช่น student_dev" autofocus required id="{{ form.username.id_for_label }}" value="{{ form.username.value|default:'' }}">
@@ -272,8 +278,8 @@
 
                 <!-- Email Field -->
                 <div class="mb-2">
-                    <label for="{{ form.email.id_for_label }}" class="form-label text-slate-700 fw-semibold mb-1" style="font-size: 0.8rem;">
-                        {{ form.email.label }}
+                    <label for="{{ form.email.id_for_label }}" class="form-label text-slate-700 fw-semibold mb-1 field-label-compact">
+                        อีเมล (Email)
                     </label>
                     <div class="auth-input-container">
                         <input type="email" name="email" class="form-control" placeholder="example@university.ac.th" id="{{ form.email.id_for_label }}" value="{{ form.email.value|default:'' }}">
@@ -289,8 +295,8 @@
                 <div class="row g-2 mb-3">
                     <!-- Password Field -->
                     <div class="col-12 col-md-6">
-                        <label for="{{ form.password.id_for_label }}" class="form-label text-slate-700 fw-semibold mb-1" style="font-size: 0.8rem;">
-                            {{ form.password.label }} <span class="text-danger">*</span>
+                        <label for="{{ form.password.id_for_label }}" class="form-label text-slate-700 fw-semibold mb-1 field-label-compact">
+                            รหัสผ่าน (Password) <span class="text-danger">*</span>
                         </label>
                         <div class="auth-input-container">
                             <input type="password" name="password" id="id_password_reg" class="form-control pe-5" placeholder="กำหนดรหัสผ่าน" required>
@@ -308,8 +314,8 @@
 
                     <!-- Confirm Password Field -->
                     <div class="col-12 col-md-6">
-                        <label for="{{ form.confirm_password.id_for_label }}" class="form-label text-slate-700 fw-semibold mb-1" style="font-size: 0.8rem;">
-                            {{ form.confirm_password.label }} <span class="text-danger">*</span>
+                        <label for="{{ form.confirm_password.id_for_label }}" class="form-label text-slate-700 fw-semibold mb-1 field-label-compact">
+                            ยืนยันรหัสผ่าน <span class="text-danger">*</span>
                         </label>
                         <div class="auth-input-container">
                             <input type="password" name="confirm_password" id="id_confirm_password_reg" class="form-control pe-5" placeholder="ยืนยันรหัสผ่าน" required>
