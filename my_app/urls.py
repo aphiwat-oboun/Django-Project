@@ -2,11 +2,31 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.home, name="home"),
-    path("about/", views.about, name="about"),
-    path("contact/", views.contact, name="contact"),
-    path("student/create/", views.student_create, name="student_create"),
-    path("student/<int:pk>/", views.student_detail, name="student_detail"),
-    path("student/<int:pk>/edit/", views.student_update, name="student_update"),
-    path("student/<int:pk>/delete/", views.student_delete, name="student_delete"),
+    path('', views.home, name='home'),
+    path('about/', views.about, name='about'),
+    path('contact/', views.contact, name='contact'),
+
+    # Authentication & Social Login URLs
+    path('login/', views.login_view, name='login'),
+    path('register/', views.register_view, name='register'),
+    path('social-login/<str:provider>/', views.social_login_view, name='social_login'),
+    path('logout/', views.logout_view, name='logout'),
+
+    # Student CRUD URLs
+    path('students/create/', views.student_create, name='student_create'),
+    path('students/<int:pk>/', views.student_detail, name='student_detail'),
+    path('students/<int:pk>/update/', views.student_update, name='student_update'),
+    path('students/<int:pk>/delete/', views.student_delete, name='student_delete'),
+
+    # Enrollment (การลงทะเบียนเรียน) URLs
+    path('students/<int:student_id>/enroll/', views.enroll_create, name='enroll_create'),
+    path('subjects/<int:subject_id>/enroll/', views.enroll_student_to_subject, name='enroll_student_to_subject'),
+    path('enrolls/<int:pk>/delete/', views.enroll_delete, name='enroll_delete'),
+
+    # Subject CRUD URLs
+    path('subjects/', views.subject_list, name='subject_list'),
+    path('subjects/create/', views.subject_create, name='subject_create'),
+    path('subjects/<int:pk>/', views.subject_detail, name='subject_detail'),
+    path('subjects/<int:pk>/update/', views.subject_update, name='subject_update'),
+    path('subjects/<int:pk>/delete/', views.subject_delete, name='subject_delete'),
 ]

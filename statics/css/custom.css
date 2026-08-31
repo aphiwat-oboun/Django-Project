@@ -253,12 +253,13 @@ body {
     background: rgba(99, 102, 241, 0.1);
     color: #4f46e5;
     font-weight: 600;
-    padding: 0.4rem 0.85rem;
+    padding: 0.35rem 0.8rem;
     border-radius: 30px;
     font-size: 0.825rem;
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.4rem;
+    white-space: nowrap;
 }
 
 .stu-id-badge {

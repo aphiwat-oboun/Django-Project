@@ -1,0 +1,253 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<!-- Page Header & Breadcrumb -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fa-solid fa-house me-1"></i>หน้าหลัก</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'subject_list' %}">รายวิชาทั้งหมด</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ subject.subject_code }}</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-slate-800 m-0">ข้อมูลประจำวิชา</h2>
+    </div>
+    {% if user.is_authenticated %}
+    <div class="d-flex gap-2 mt-3 mt-md-0">
+        <a href="{% url 'subject_update' pk=subject.pk %}" class="btn btn-warning text-white">
+            <i class="fa-solid fa-pen-to-square me-1"></i> แก้ไขข้อมูล
+        </a>
+        <a href="{% url 'subject_delete' pk=subject.pk %}" class="btn btn-danger">
+            <i class="fa-solid fa-trash-can me-1"></i> ลบข้อมูล
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+        <!-- 1. Subject Info Card -->
+        <div class="card shadow-sm border-0 mb-4 overflow-hidden">
+            <!-- Hero Header -->
+            <div class="profile-hero">
+                <div class="d-flex flex-wrap align-items-center gap-4 position-relative" style="z-index: 2;">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width: 72px; height: 72px; border: 3px solid rgba(255, 255, 255, 0.4);">
+                        <i class="fa-solid fa-book-bookmark fs-1 text-white"></i>
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <span class="badge bg-primary rounded-pill px-3 py-1 font-monospace" style="letter-spacing: 0.05em;">
+                                {{ subject.subject_code }}
+                            </span>
+                            <span class="badge bg-success bg-opacity-75 rounded-pill px-3 py-1">
+                                {{ subject.category.category_name }}
+                            </span>
+                            <span class="badge bg-white text-dark rounded-pill px-3 py-1">
+                                <i class="fa-solid fa-users me-1 text-primary"></i> มีผู้ลงทะเบียน {{ enrolls|length }} คน
+                            </span>
+                        </div>
+                        <h3 class="fw-bold text-white mb-1">
+                            {{ subject.subject_name }}
+                        </h3>
+                        <div class="text-indigo-200" style="color: #c7d2fe;">
+                            <i class="fa-solid fa-tag me-1"></i> โครงสร้างหลักสูตรรายวิชา
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Details Grid -->
+            <div class="card-body p-4 p-md-5">
+                <h5 class="fw-bold text-dark mb-4 d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-primary"></i> ข้อมูลรายวิชาและหมวดหมู่
+                </h5>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-md-6">
+                        <div class="detail-tile">
+                            <div class="detail-tile-label"><i class="fa-solid fa-barcode me-1 text-muted"></i> รหัสวิชา</div>
+                            <div class="detail-tile-value text-primary font-monospace">{{ subject.subject_code }}</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="detail-tile">
+                            <div class="detail-tile-label"><i class="fa-solid fa-tags me-1 text-muted"></i> หมวดหมู่วิชา</div>
+                            <div class="detail-tile-value">{{ subject.category.category_name }}</div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="detail-tile">
+                            <div class="detail-tile-label"><i class="fa-solid fa-book-open me-1 text-muted"></i> ชื่อรายวิชาเรียน</div>
+                            <div class="detail-tile-value text-dark">{{ subject.subject_name }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Actions -->
+                <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                    <a href="{% url 'subject_list' %}" class="btn btn-secondary">
+                        <i class="fa-solid fa-arrow-left me-1"></i> กลับหน้ารายการ
+                    </a>
+                    {% if user.is_authenticated %}
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'subject_update' pk=subject.pk %}" class="btn btn-warning text-white">
+                            <i class="fa-solid fa-pen-to-square me-1"></i> แก้ไขข้อมูล
+                        </a>
+                        <a href="{% url 'subject_delete' pk=subject.pk %}" class="btn btn-danger">
+                            <i class="fa-solid fa-trash-can me-1"></i> ลบข้อมูล
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Enrolled Students List Card (รายชื่อนักศึกษาที่เลือกลงทะเบียนวิชานี้) -->
+        <div class="card shadow-sm border-0 mb-5 overflow-hidden">
+            <div class="card-header bg-white py-3 px-4 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-users text-primary fs-5"></i>
+                    <span class="fw-bold fs-6">รายชื่อนักศึกษาที่ลงทะเบียนวิชานี้ (Enrolled Students)</span>
+                </div>
+                <span class="badge bg-light text-dark border px-3 py-1.5 rounded-pill">
+                    จำนวนนักศึกษาทั้งหมด <strong>{{ enrolls|length }}</strong> คน
+                </span>
+            </div>
+
+            <!-- Add Student to Subject Form for Authenticated Users -->
+            {% if user.is_authenticated %}
+            <div class="p-4 bg-light border-bottom">
+                <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-user-plus text-primary"></i> เพิ่มนักศึกษาลงทะเบียนวิชานี้
+                </h6>
+                <form method="post" action="{% url 'enroll_student_to_subject' subject_id=subject.pk %}" class="row g-3 align-items-end">
+                    {% csrf_token %}
+                    
+                    <!-- Select Student -->
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <label for="id_enroll_student" class="form-label small fw-semibold text-muted mb-1">
+                            <i class="fa-solid fa-user me-1"></i> เลือกนักศึกษา <span class="text-danger">*</span>
+                        </label>
+                        <select name="student" id="id_enroll_student" class="form-select" required>
+                            <option value="">-- กรุณาเลือกนักศึกษา --</option>
+                            {% for stu in all_students %}
+                                <option value="{{ stu.id }}">
+                                    {{ stu.stu_id }} - {{ stu.get_prefix_name_display }}{{ stu.fname }} {{ stu.lname }} (สาขา{{ stu.major.major_name|default:stu.major }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Select Semester -->
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <label for="id_enroll_subject_sem" class="form-label small fw-semibold text-muted mb-1">
+                            <i class="fa-solid fa-calendar-days me-1"></i> เลือกภาคเรียน <span class="text-danger">*</span>
+                        </label>
+                        <select name="semester" id="id_enroll_subject_sem" class="form-select" required>
+                            {% for sem_val, sem_label in semesters %}
+                                <option value="{{ sem_val }}">{{ sem_label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-12 col-md-3 col-lg-3">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fa-solid fa-plus me-1"></i> เพิ่มลงทะเบียน
+                        </button>
+                    </div>
+                </form>
+            </div>
+            {% endif %}
+
+            <!-- Enrolled Students Table -->
+            <div class="card-body p-0">
+                {% if enrolls %}
+                <div class="table-responsive">
+                    <table class="custom-table mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-center" style="width: 5%">#</th>
+                                <th style="width: 12%">ภาคเรียน</th>
+                                <th style="width: 15%">รหัสนักศึกษา</th>
+                                <th style="width: 30%">นักศึกษา (รูป & ชื่อ-สกุล)</th>
+                                <th style="width: 28%">สาขาวิชา (Major)</th>
+                                {% if user.is_authenticated %}
+                                <th class="text-center" style="width: 10%">ถอนรายวิชา</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for enroll in enrolls %}
+                            <tr>
+                                <td class="text-center text-muted fw-bold">{{ forloop.counter }}</td>
+                                <td>
+                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1.5 rounded-pill font-monospace fw-semibold">
+                                        <i class="fa-solid fa-calendar-check me-1"></i>{{ enroll.semester }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="{% url 'student_detail' pk=enroll.student.pk %}" class="stu-id-badge text-decoration-none" title="ดูข้อมูลนักศึกษา">
+                                        <i class="fa-solid fa-id-card text-muted me-1"></i>{{ enroll.student.stu_id }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="me-3">
+                                            {% if enroll.student.prefix_name == "2" or enroll.student.prefix_name == "3" %}
+                                                <img src="{% static 'assets/img/avatar-female.svg' %}" alt="Avatar" class="student-avatar-img">
+                                            {% else %}
+                                                <img src="{% static 'assets/img/avatar-male.svg' %}" alt="Avatar" class="student-avatar-img">
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <a href="{% url 'student_detail' pk=enroll.student.pk %}" class="fw-semibold text-dark text-decoration-none d-block">
+                                                {{ enroll.student.get_prefix_name_display }}{{ enroll.student.fname }} {{ enroll.student.lname }}
+                                            </a>
+                                            <span class="text-muted small">คำนำหน้า: {{ enroll.student.get_prefix_name_display }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="major-badge">
+                                        <i class="fa-solid fa-tag me-1"></i>{{ enroll.student.major.major_name|default:enroll.student.major }}
+                                    </span>
+                                </td>
+                                {% if user.is_authenticated %}
+                                <td class="text-center">
+                                    <form method="post" action="{% url 'enroll_delete' pk=enroll.pk %}" onsubmit="return confirm('คุณต้องการถอนนักศึกษา {{ enroll.student.fname }} {{ enroll.student.lname }} ออกจากวิชานี้ใช่หรือไม่?');" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="next" value="{% url 'subject_detail' pk=subject.pk %}">
+                                        <button type="submit" class="action-btn btn-delete" title="ถอนรายวิชา">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5 px-3">
+                    <i class="fa-solid fa-users text-muted mb-3 fs-1 opacity-50"></i>
+                    <h5 class="fw-bold text-dark mb-1">ยังไม่มีนักศึกษาลงทะเบียนในวิชานี้</h5>
+                    <p class="text-muted small mb-0">
+                        {% if user.is_authenticated %}
+                            เลือกนักศึกษาและภาคเรียนด้านบนเพื่อบันทึกการลงทะเบียน
+                        {% else %}
+                            เข้าสู่ระบบเพื่อจัดการการลงทะเบียนของนักศึกษา
+                        {% endif %}
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

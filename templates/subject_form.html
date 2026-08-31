@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<!-- Page Header & Breadcrumb -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fa-solid fa-house me-1"></i>หน้าหลัก</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'subject_list' %}">รายวิชาทั้งหมด</a></li>
+                {% if action == 'update' and subject %}
+                <li class="breadcrumb-item"><a href="{% url 'subject_detail' pk=subject.pk %}">{{ subject.subject_code }}</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-slate-800 m-0">
+            {% if action == 'create' %}
+                <i class="fa-solid fa-folder-plus text-primary me-2"></i>เพิ่มรายวิชาใหม่
+            {% else %}
+                <i class="fa-solid fa-pen-to-square text-warning me-2"></i>แก้ไขรายวิชา
+            {% endif %}
+        </h2>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="card shadow-sm border-0 mb-5">
+            <div class="card-header gradient-primary py-3 px-4">
+                <div class="d-flex align-items-center justify-content-between text-white">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-book-bookmark fs-5"></i>
+                        <span class="fw-semibold fs-6">
+                            {% if action == 'create' %}
+                                ฟอร์มกรอกข้อมูลรายวิชา (New Subject Form)
+                            {% else %}
+                                แก้ไขข้อมูลวิชา: {{ subject.subject_code }} - {{ subject.subject_name }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <span class="badge bg-white text-dark rounded-pill px-3 py-1 small">
+                        {% if action == 'create' %}CREATE{% else %}UPDATE{% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+                        <i class="fa-solid fa-circle-exclamation me-2 fs-5"></i>
+                        <div>
+                            {% for error in form.non_field_errors %}
+                                <p class="mb-0">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <form method="post" novalidate autocomplete="off">
+                    {% csrf_token %}
+
+                    <div class="row g-4 mb-4">
+                        <!-- Subject Code -->
+                        <div class="col-12 col-md-6">
+                            <label for="{{ form.subject_code.id_for_label }}" class="form-label">
+                                {{ form.subject_code.label }} <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-barcode"></i></span>
+                                {{ form.subject_code }}
+                            </div>
+                            {% if form.subject_code.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="fa-solid fa-circle-xmark me-1"></i>{{ form.subject_code.errors.0 }}
+                                </div>
+                            {% else %}
+                                <div class="text-muted small mt-1">ตัวอย่าง: CS101, MA111, GE101</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Category -->
+                        <div class="col-12 col-md-6">
+                            <label for="{{ form.category.id_for_label }}" class="form-label">
+                                {{ form.category.label }} <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-tags"></i></span>
+                                {{ form.category }}
+                            </div>
+                            {% if form.category.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="fa-solid fa-circle-xmark me-1"></i>{{ form.category.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Subject Name -->
+                        <div class="col-12">
+                            <label for="{{ form.subject_name.id_for_label }}" class="form-label">
+                                {{ form.subject_name.label }} <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-book-open"></i></span>
+                                {{ form.subject_name }}
+                            </div>
+                            {% if form.subject_name.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="fa-solid fa-circle-xmark me-1"></i>{{ form.subject_name.errors.0 }}
+                                </div>
+                            {% else %}
+                                <div class="text-muted small mt-1">ตัวอย่าง: พื้นฐานวิทยาการคอมพิวเตอร์</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Footer Buttons -->
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-4">
+                        {% if action == 'update' and subject %}
+                            <a href="{% url 'subject_detail' pk=subject.pk %}" class="btn btn-secondary">
+                                <i class="fa-solid fa-arrow-left me-1"></i> ยกเลิก
+                            </a>
+                        {% else %}
+                            <a href="{% url 'subject_list' %}" class="btn btn-secondary">
+                                <i class="fa-solid fa-arrow-left me-1"></i> ยกเลิก
+                            </a>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary px-4">
+                            <i class="fa-solid fa-save me-1"></i> บันทึกข้อมูล
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
