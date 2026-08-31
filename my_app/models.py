@@ -93,3 +93,21 @@ class SubjectAdmin(admin.ModelAdmin):
     ordering = ('subject_code',)
 
 admin.site.register(Subject, SubjectAdmin)
+
+class Enrollement(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name="enrollements", verbose_name="นักศึกษา")
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="enrollements", verbose_name="รายวิชา")
+
+    def __str__(self):
+        return f'{self.student} - {self.subject}'
+
+    def get_absolute_url(self):
+        return reverse('enrollement_detail', kwargs={'pk': self.pk})
+
+class EnrollementAdmin(admin.ModelAdmin):
+    list_display = ('student', 'subject')
+    list_filter = ('student', 'subject')
+    search_fields = ('student', 'subject')
+    ordering = ('student',)
+
+admin.site.register(Enrollement, EnrollementAdmin)  
