@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="fa-solid fa-house me-1"></i>หน้าหลัก</a></li>
+                {% if action == 'update' and student %}
+                <li class="breadcrumb-item"><a href="{% url 'student_detail' pk=student.pk %}">{{ student.stu_id }}</a></li>
+                {% endif %}
+                <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold text-slate-800 m-0">
+            {% if action == 'create' %}
+                <i class="fa-solid fa-user-plus text-primary me-2"></i>เพิ่มข้อมูลนักศึกษาใหม่
+            {% else %}
+                <i class="fa-solid fa-user-pen text-warning me-2"></i>แก้ไขข้อมูลนักศึกษา
+            {% endif %}
+        </h2>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="card shadow-sm border-0 mb-5">
+            <div class="card-header {% if action == 'create' %}gradient-primary{% else %}gradient-primary{% endif %} py-3 px-4">
+                <div class="d-flex align-items-center justify-content-between text-white">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-clipboard-list fs-5"></i>
+                        <span class="fw-semibold fs-6">
+                            {% if action == 'create' %}
+                                ฟอร์มกรอกข้อมูลนักศึกษา (New Student Form)
+                            {% else %}
+                                แก้ไขข้อมูล: {{ student.get_prefix_name_display }}{{ student.fname }} {{ student.lname }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <span class="badge bg-white text-dark rounded-pill px-3 py-1 small">
+                        {% if action == 'create' %}CREATE{% else %}UPDATE{% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+                        <i class="fa-solid fa-circle-exclamation me-2 fs-5"></i>
+                        <div>
+                            {% for error in form.non_field_errors %}
+                                <p class="mb-0">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <form method="post" novalidate autocomplete="off">
+                    {% csrf_token %}
+
+                    <div class="row g-4 mb-4">
+                        <!-- Prefix Name -->
+                        <div class="col-12 col-md-4">
+                            <label for="{{ form.prefix_name.id_for_label }}" class="form-label">
+                                {{ form.prefix_name.label }} <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-user-tag"></i></span>
+                                {{ form.prefix_name }}
+                            </div>
+                            {% if form.prefix_name.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="fa-solid fa-circle-xmark me-1"></i>{{ form.prefix_name.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Student ID -->
+                        <div class="col-12 col-md-8">
+                            <label for="{{ form.stu_id.id_for_label }}" class="form-label">
+                                {{ form.stu_id.label }} <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-id-card"></i></span>
+                                {{ form.stu_id }}
+                            </div>
+                            {% if form.stu_id.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="fa-solid fa-circle-xmark me-1"></i>{{ form.stu_id.errors.0 }}
+                                </div>
+                            {% else %}
+                                <div class="text-muted small mt-1">ตัวอย่าง: 6500000001 (รหัสนักศึกษาไม่ซ้ำกัน)</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- First Name -->
+                        <div class="col-12 col-md-6">
+                            <label for="{{ form.fname.id_for_label }}" class="form-label">
+                                {{ form.fname.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-font"></i></span>
+                                {{ form.fname }}
+                            </div>
+                            {% if form.fname.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="fa-solid fa-circle-xmark me-1"></i>{{ form.fname.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Last Name -->
+                        <div class="col-12 col-md-6">
+                            <label for="{{ form.lname.id_for_label }}" class="form-label">
+                                {{ form.lname.label }}
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-signature"></i></span>
+                                {{ form.lname }}
+                            </div>
+                            {% if form.lname.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="fa-solid fa-circle-xmark me-1"></i>{{ form.lname.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Major -->
+                        <div class="col-12">
+                            <label for="{{ form.major.id_for_label }}" class="form-label">
+                                {{ form.major.label }} <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted"><i class="fa-solid fa-graduation-cap"></i></span>
+                                {{ form.major }}
+                            </div>
+                            {% if form.major.errors %}
+                                <div class="text-danger small mt-1">
+                                    <i class="fa-solid fa-circle-xmark me-1"></i>{{ form.major.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap align-items-center justify-content-between pt-3 border-top mt-4 gap-2">
+                        {% if action == 'update' and student %}
+                            <a href="{% url 'student_detail' pk=student.pk %}" class="btn btn-secondary">
+                                <i class="fa-solid fa-xmark"></i> ยกเลิก
+                            </a>
+                        {% else %}
+                            <a href="{% url 'home' %}" class="btn btn-secondary">
+                                <i class="fa-solid fa-xmark"></i> ยกเลิก
+                            </a>
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-success px-4 py-2">
+                            <i class="fa-solid fa-floppy-disk me-1"></i> บันทึกข้อมูล
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

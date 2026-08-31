@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGradMale" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+    <linearGradient id="shirtMale" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fde047"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <!-- Background Circle -->
+  <circle cx="60" cy="60" r="58" fill="url(#bgGradMale)" />
+  
+  <!-- Male Body / Uniform -->
+  <path d="M26 110 C26 84, 42 78, 60 78 C78 78, 94 84, 94 110 Z" fill="url(#shirtMale)" />
+  <!-- Tie / Collar -->
+  <path d="M54 78 L60 88 L66 78 Z" fill="#ffffff" />
+  <path d="M58 84 L60 106 L62 84 Z" fill="#1e1b4b" />
+  
+  <!-- Head & Neck -->
+  <rect x="52" y="62" width="16" height="18" rx="4" fill="#fbbf24" />
+  <circle cx="60" cy="50" r="22" fill="#fbbf24" />
+  
+  <!-- Hair (Short modern haircut) -->
+  <path d="M38 48 C38 32, 48 24, 60 24 C72 24, 82 32, 82 48 C78 36, 68 34, 60 35 C52 36, 42 40, 38 48 Z" fill="#1e293b" />
+  
+  <!-- Friendly Face Details -->
+  <circle cx="52" cy="48" r="2.5" fill="#0f172a" />
+  <circle cx="68" cy="48" r="2.5" fill="#0f172a" />
+  <path d="M54 57 Q60 63 66 57" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" fill="none" />
+</svg>
