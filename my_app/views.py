@@ -93,7 +93,19 @@ def student_detail(request, pk):
     return render(request, "student_detail.html", context)
 
 
-@login_required
+def staff_required(view_func):
+    """Decorator to ensure only staff/superusers can perform write/edit/delete actions."""
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(f"{reverse('login')}?next={request.path}")
+        if not (request.user.is_staff or request.user.is_superuser):
+            messages.error(request, "คุณไม่มีสิทธิ์ในการจัดการข้อมูล (สงวนสิทธิ์เฉพาะผู้ดูแลระบบ)")
+            return redirect("home")
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
+
+
+@staff_required
 def student_create(request):
     if request.method == "POST":
         form = StudentForm(request.POST)
@@ -115,7 +127,7 @@ def student_create(request):
     return render(request, "student_form.html", context)
 
 
-@login_required
+@staff_required
 def student_update(request, pk):
     student = get_object_or_404(Student, pk=pk)
     if request.method == "POST":
@@ -139,7 +151,7 @@ def student_update(request, pk):
     return render(request, "student_form.html", context)
 
 
-@login_required
+@staff_required
 def student_delete(request, pk):
     student = get_object_or_404(Student, pk=pk)
     if request.method == "POST":
@@ -157,7 +169,7 @@ def student_delete(request, pk):
 
 
 # ---------------- Enrollment Actions (ลงทะเบียนเรียน) ----------------
-@login_required
+@staff_required
 def enroll_create(request, student_id):
     student = get_object_or_404(Student, pk=student_id)
     if request.method == "POST":
@@ -177,7 +189,7 @@ def enroll_create(request, student_id):
     return redirect("student_detail", pk=student.pk)
 
 
-@login_required
+@staff_required
 def enroll_student_to_subject(request, subject_id):
     subject = get_object_or_404(Subject, pk=subject_id)
     if request.method == "POST":
@@ -195,7 +207,7 @@ def enroll_student_to_subject(request, subject_id):
     return redirect("subject_detail", pk=subject.pk)
 
 
-@login_required
+@staff_required
 def enroll_delete(request, pk):
     enroll = get_object_or_404(Enrolls.objects.select_related("student", "subject"), pk=pk)
     student_id = enroll.student.pk
@@ -265,7 +277,7 @@ def subject_detail(request, pk):
     return render(request, "subject_detail.html", context)
 
 
-@login_required
+@staff_required
 def subject_create(request):
     if request.method == "POST":
         form = SubjectForm(request.POST)
@@ -287,7 +299,7 @@ def subject_create(request):
     return render(request, "subject_form.html", context)
 
 
-@login_required
+@staff_required
 def subject_update(request, pk):
     subject = get_object_or_404(Subject, pk=pk)
     if request.method == "POST":
@@ -311,7 +323,7 @@ def subject_update(request, pk):
     return render(request, "subject_form.html", context)
 
 
-@login_required
+@staff_required
 def subject_delete(request, pk):
     subject = get_object_or_404(Subject, pk=pk)
     if request.method == "POST":
@@ -497,12 +509,18 @@ def social_callback_view(request, provider):
             family_name = user_info.get("family_name", "")
             username = email.split("@")[0] if email else f"google_{user_info.get('sub', 'user')[:8]}"
 
-            user, _ = User.objects.get_or_create(
+            user, created = User.objects.get_or_create(
                 username=username,
                 defaults={"email": email, "first_name": given_name, "last_name": family_name}
             )
+            if not created and given_name and user.first_name != given_name:
+                user.first_name = given_name
+                user.last_name = family_name
+                user.save(update_fields=["first_name", "last_name"])
+
             login(request, user)
-            messages.success(request, f"ยินดีต้อนรับคุณ {user.first_name or user.username} เข้าสู่ระบบด้วย Google สำเร็จ")
+            display_user_name = user.get_full_name() or user.first_name or user.username
+            messages.success(request, f"ยินดีต้อนรับคุณ {display_user_name} เข้าสู่ระบบด้วย Google สำเร็จ")
             return redirect("home")
 
         elif provider == "github":
@@ -537,12 +555,16 @@ def social_callback_view(request, provider):
             gh_name = gh_user.get("name", "") or gh_username
             gh_email = gh_user.get("email", "") or f"{gh_username}@github.user"
 
-            user, _ = User.objects.get_or_create(
+            user, created = User.objects.get_or_create(
                 username=gh_username,
                 defaults={"email": gh_email, "first_name": gh_name}
             )
+            if not created and gh_name and user.first_name != gh_name:
+                user.first_name = gh_name
+                user.save(update_fields=["first_name"])
+
             login(request, user)
-            messages.success(request, f"ยินดีต้อนรับคุณ {user.username} เข้าสู่ระบบด้วย GitHub สำเร็จ")
+            messages.success(request, f"ยินดีต้อนรับคุณ {user.first_name or user.username} เข้าสู่ระบบด้วย GitHub สำเร็จ")
             return redirect("home")
 
         elif provider == "line":
@@ -578,12 +600,16 @@ def social_callback_view(request, provider):
             display_name = line_profile.get("displayName", "LINE User")
             username = f"line_{line_user_id[:8]}"
 
-            user, _ = User.objects.get_or_create(
+            user, created = User.objects.get_or_create(
                 username=username,
                 defaults={"first_name": display_name, "email": f"{username}@line.me"}
             )
+            if not created and display_name and user.first_name != display_name:
+                user.first_name = display_name
+                user.save(update_fields=["first_name"])
+
             login(request, user)
-            messages.success(request, f"ยินดีต้อนรับคุณ {display_name} เข้าสู่ระบบด้วย LINE สำเร็จ")
+            messages.success(request, f"ยินดีต้อนรับคุณ {user.first_name or user.username} เข้าสู่ระบบด้วย LINE สำเร็จ")
             return redirect("home")
 
     except Exception as e:

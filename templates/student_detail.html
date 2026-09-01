@@ -16,7 +16,7 @@
         </nav>
         <h2 class="fw-bold text-slate-800 m-0">ข้อมูลประจำตัวนักศึกษา</h2>
     </div>
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and user.is_staff or user.is_superuser %}
     <div class="d-flex gap-2 mt-3 mt-md-0">
         <a href="{% url 'student_update' pk=student.pk %}" class="btn btn-warning text-white">
             <i class="fa-solid fa-pen-to-square me-1"></i> แก้ไขข้อมูล
@@ -113,16 +113,6 @@
                     <a href="{% url 'home' %}" class="btn btn-secondary">
                         <i class="fa-solid fa-arrow-left me-1"></i> กลับหน้ารายชื่อ
                     </a>
-                    {% if user.is_authenticated %}
-                    <div class="d-flex gap-2">
-                        <a href="{% url 'student_update' pk=student.pk %}" class="btn btn-warning text-white">
-                            <i class="fa-solid fa-pen-to-square me-1"></i> แก้ไขข้อมูล
-                        </a>
-                        <a href="{% url 'student_delete' pk=student.pk %}" class="btn btn-danger">
-                            <i class="fa-solid fa-trash-can me-1"></i> ลบข้อมูล
-                        </a>
-                    </div>
-                    {% endif %}
                 </div>
             </div>
         </div>
@@ -139,8 +129,8 @@
                 </span>
             </div>
 
-            <!-- Enrollment Form for Authenticated Users -->
-            {% if user.is_authenticated %}
+            <!-- Enrollment Form for Staff/Admin -->
+            {% if user.is_staff or user.is_superuser %}
             <div class="p-4 bg-light border-bottom">
                 <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
                     <i class="fa-solid fa-plus-circle text-primary"></i> เพิ่มการลงทะเบียนรายวิชา
@@ -169,6 +159,7 @@
                             <i class="fa-solid fa-calendar-days me-1"></i> เลือกภาคเรียน <span class="text-danger">*</span>
                         </label>
                         <select name="semester" id="id_enroll_semester" class="form-select" required>
+                            <option value="">-- เลือกภาคเรียน --</option>
                             {% for sem_val, sem_label in semesters %}
                                 <option value="{{ sem_val }}">{{ sem_label }}</option>
                             {% endfor %}
@@ -178,14 +169,14 @@
                     <!-- Submit Button -->
                     <div class="col-12 col-md-3 col-lg-3">
                         <button type="submit" class="btn btn-primary w-100">
-                            <i class="fa-solid fa-plus me-1"></i> ลงทะเบียนวิชา
+                            <i class="fa-solid fa-check-circle me-1"></i> บันทึกลงทะเบียน
                         </button>
                     </div>
                 </form>
             </div>
             {% endif %}
 
-            <!-- Enrolled Subjects Table -->
+            <!-- Enrolled Subjects Table Section -->
             <div class="card-body p-0">
                 {% if enrolls %}
                 <div class="table-responsive">
@@ -197,7 +188,7 @@
                                 <th style="width: 15%">รหัสวิชา</th>
                                 <th style="width: 38%">ชื่อรายวิชา</th>
                                 <th style="width: 20%">หมวดหมู่วิชา</th>
-                                {% if user.is_authenticated %}
+                                {% if user.is_staff or user.is_superuser %}
                                 <th class="text-center" style="width: 10%">ถอนรายวิชา</th>
                                 {% endif %}
                             </tr>
@@ -209,7 +200,7 @@
                                 <td>
                                     {% if "1/" in enroll.semester %}
                                         <span class="semester-badge semester-badge-1">
-                                            <i class="fa-solid fa-calendar-check"></i> {{ enroll.semester }}
+                                            <i class="fa-solid fa-graduation-cap"></i> {{ enroll.semester }}
                                         </span>
                                     {% elif "2/" in enroll.semester %}
                                         <span class="semester-badge semester-badge-2">
@@ -240,7 +231,7 @@
                                         <i class="fa-solid fa-tag me-1"></i>{{ enroll.subject.category.category_name }}
                                     </span>
                                 </td>
-                                {% if user.is_authenticated %}
+                                {% if user.is_staff or user.is_superuser %}
                                 <td class="text-center">
                                     <form method="post" action="{% url 'enroll_delete' pk=enroll.pk %}" onsubmit="return confirm('คุณต้องการถอนรายวิชา {{ enroll.subject.subject_code }} (ภาคเรียน {{ enroll.semester }}) ใช่หรือไม่?');" class="d-inline">
                                         {% csrf_token %}
@@ -260,10 +251,10 @@
                     <i class="fa-solid fa-graduation-cap text-muted mb-3 fs-1 opacity-50"></i>
                     <h5 class="fw-bold text-dark mb-1">ยังไม่มีข้อมูลการลงทะเบียนเรียน</h5>
                     <p class="text-muted small mb-0">
-                        {% if user.is_authenticated %}
+                        {% if user.is_staff or user.is_superuser %}
                             เลือกรายวิชาและภาคเรียนด้านบนเพื่อบันทึกการลงทะเบียน
                         {% else %}
-                            เข้าสู่ระบบเพื่อจัดการการลงทะเบียนรายวิชา
+                            เข้าสู่ระบบด้วยบัญชีผู้ดูแลระบบเพื่อจัดการการลงทะเบียนรายวิชา
                         {% endif %}
                     </p>
                 </div>

@@ -50,12 +50,23 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-light d-flex align-items-center gap-2" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="{% static 'assets/img/avatar-admin.svg' %}" alt="User" style="width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid #818cf8;">
-                        <span class="d-none d-lg-inline small fw-semibold">{{ user.username }}</span>
+                        <span class="d-none d-lg-inline small fw-semibold">{{ user.first_name|default:user.username }}</span>
+                        {% if user.is_staff or user.is_superuser %}
+                            <span class="badge bg-danger rounded-pill d-none d-xl-inline" style="font-size: 0.65rem; padding: 2px 6px;">Admin</span>
+                        {% endif %}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="navbarDropdown">
                         <li>
                             <div class="dropdown-header text-muted small">
-                                เข้าสู่ระบบโดย: <strong>{{ user.username }}</strong>
+                                <div>เข้าสู่ระบบโดย: <strong>{{ user.first_name|default:user.username }}</strong></div>
+                                <div class="text-muted" style="font-size: 0.75rem;">(@{{ user.username }})</div>
+                                <div class="mt-1">
+                                    {% if user.is_staff or user.is_superuser %}
+                                        <span class="badge bg-danger">ผู้ดูแลระบบ (Admin)</span>
+                                    {% else %}
+                                        <span class="badge bg-primary">สมาชิกทั่วไป</span>
+                                    {% endif %}
+                                </div>
                             </div>
                         </li>
                         <li><hr class="dropdown-divider" /></li>
@@ -89,7 +100,7 @@
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-users"></i></div>
                                 รายชื่อนักศึกษา
                             </a>
-                            {% if user.is_authenticated %}
+                            {% if user.is_staff or user.is_superuser %}
                             <a class="nav-link {% if request.resolver_match.url_name == 'student_create' %}active{% endif %}" href="{% url 'student_create' %}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-user-plus"></i></div>
                                 เพิ่มนักศึกษาใหม่
@@ -102,7 +113,7 @@
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-book-bookmark"></i></div>
                                 รายวิชาทั้งหมด
                             </a>
-                            {% if user.is_authenticated %}
+                            {% if user.is_staff or user.is_superuser %}
                             <a class="nav-link {% if request.resolver_match.url_name == 'subject_create' %}active{% endif %}" href="{% url 'subject_create' %}">
                                 <div class="sb-nav-link-icon"><i class="fa-solid fa-folder-plus"></i></div>
                                 เพิ่มรายวิชาใหม่
@@ -143,9 +154,21 @@
                         <div class="small fw-semibold text-light mb-1">ระบบจัดการฐานข้อมูล</div>
                         <div class="text-muted small mb-1">Django • PostgreSQL</div>
                         <div>
-                            <span class="badge {% if user.is_authenticated %}bg-success{% else %}bg-secondary{% endif %} rounded-pill px-2 py-1">
-                                {% if user.is_authenticated %}<i class="fa-solid fa-circle-check me-1"></i> เข้าสู่ระบบแล้ว{% else %}<i class="fa-solid fa-user me-1"></i> ผู้เยี่ยมชม{% endif %}
-                            </span>
+                            {% if user.is_authenticated %}
+                                {% if user.is_staff or user.is_superuser %}
+                                    <span class="badge bg-danger rounded-pill px-2 py-1">
+                                        <i class="fa-solid fa-shield-halved me-1"></i> ผู้ดูแลระบบ
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-success rounded-pill px-2 py-1">
+                                        <i class="fa-solid fa-circle-check me-1"></i> สมาชิกทั่วไป
+                                    </span>
+                                {% endif %}
+                            {% else %}
+                                <span class="badge bg-secondary rounded-pill px-2 py-1">
+                                    <i class="fa-solid fa-user me-1"></i> ผู้เยี่ยมชม
+                                </span>
+                            {% endif %}
                         </div>
                     </div>
                 </nav>
