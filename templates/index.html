@@ -12,7 +12,7 @@
         </h2>
         <p class="text-muted small m-0">จัดการ ดูรายละเอียด เพิ่ม แก้ไข และลบข้อมูลนักศึกษาในระบบ</p>
     </div>
-    {% if user.is_authenticated %}
+    {% if user.is_staff or user.is_superuser %}
     <div class="mt-3 mt-md-0">
         <a href="{% url 'student_create' %}" class="btn btn-primary shadow-sm">
             <i class="fa-solid fa-user-plus"></i>
@@ -166,12 +166,14 @@
                                 <a href="{% url 'student_detail' pk=student.pk %}" class="action-btn btn-view" title="ดูรายละเอียด">
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
+                                {% if user.is_staff or user.is_superuser %}
                                 <a href="{% url 'student_update' pk=student.pk %}" class="action-btn btn-edit" title="แก้ไขข้อมูล">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
                                 <a href="{% url 'student_delete' pk=student.pk %}" class="action-btn btn-delete" title="ลบข้อมูล">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </a>
+                                {% endif %}
                             </div>
                         </td>
                         {% endif %}
@@ -235,7 +237,7 @@
             <img src="{% static 'assets/img/avatar-male.svg' %}" alt="Empty" style="width: 72px; opacity: 0.5;" class="mb-3">
             <h5 class="fw-bold text-dark mb-1">ยังไม่มีข้อมูลนักศึกษาในระบบ</h5>
             <p class="text-muted small mb-4">เริ่มต้นด้วยการเพิ่มข้อมูลนักศึกษาคนแรกเข้าสู่ระบบ</p>
-            {% if user.is_authenticated %}
+            {% if user.is_staff or user.is_superuser %}
             <a href="{% url 'student_create' %}" class="btn btn-primary">
                 <i class="fa-solid fa-plus me-1"></i> เพิ่มนักศึกษาใหม่
             </a>

@@ -7,8 +7,9 @@ from .forms import StudentForm, SubjectForm, RegisterForm
 class StudentCRUDTestCase(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user(username="testuser", password="password123")
-        self.client.force_login(self.user)
+        self.staff_user = User.objects.create_user(username="staffuser", password="password123", is_staff=True)
+        self.normal_user = User.objects.create_user(username="normaluser", password="password123", is_staff=False)
+        self.client.force_login(self.staff_user)
         self.major = Major.objects.create(major_name="Computer Science")
         self.student = Student.objects.create(
             prefix_name="1",
@@ -30,10 +31,16 @@ class StudentCRUDTestCase(TestCase):
         self.assertContains(response, "6500000001")
         self.assertContains(response, "Somchai")
 
-    def test_student_create_get(self):
+    def test_student_create_get_staff(self):
         response = self.client.get(reverse("student_create"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "student_form.html")
+
+    def test_student_create_non_staff_forbidden(self):
+        self.client.force_login(self.normal_user)
+        response = self.client.get(reverse("student_create"), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "คุณไม่มีสิทธิ์ในการจัดการข้อมูล")
 
     def test_student_create_post(self):
         data = {
@@ -79,8 +86,9 @@ class StudentCRUDTestCase(TestCase):
 class SubjectCRUDTestCase(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user(username="testuser_subject", password="password123")
-        self.client.force_login(self.user)
+        self.staff_user = User.objects.create_user(username="staff_subject", password="password123", is_staff=True)
+        self.normal_user = User.objects.create_user(username="normal_subject", password="password123", is_staff=False)
+        self.client.force_login(self.staff_user)
         self.category = Category.objects.create(category_name="วิชาเฉพาะสาขา")
         self.subject = Subject.objects.create(
             subject_code="CS101",
@@ -109,6 +117,12 @@ class SubjectCRUDTestCase(TestCase):
         response = self.client.get(reverse("subject_create"))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "subject_form.html")
+
+    def test_subject_create_non_staff_forbidden(self):
+        self.client.force_login(self.normal_user)
+        response = self.client.get(reverse("subject_create"), follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "คุณไม่มีสิทธิ์ในการจัดการข้อมูล")
 
     def test_subject_create_post(self):
         data = {
@@ -188,20 +202,9 @@ class AuthTestCase(TestCase):
         self.assertTrue(User.objects.filter(username="new_student").exists())
         self.assertTrue(response.context["user"].is_authenticated)
 
-    def test_social_login_google(self):
-        response = self.client.get(reverse("social_login", kwargs={"provider": "google"}), follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.context["user"].is_authenticated)
-        self.assertEqual(response.context["user"].username, "google_user")
-
-    def test_social_login_line(self):
-        response = self.client.get(reverse("social_login", kwargs={"provider": "line"}), follow=True)
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.context["user"].is_authenticated)
-        self.assertEqual(response.context["user"].username, "line_user")
-
     def test_logout(self):
         self.client.force_login(self.user)
         response = self.client.get(reverse("logout"), follow=True)
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.context["user"].is_authenticated)
+

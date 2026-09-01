@@ -16,7 +16,7 @@
         </nav>
         <h2 class="fw-bold text-slate-800 m-0">ข้อมูลประจำวิชา</h2>
     </div>
-    {% if user.is_authenticated %}
+    {% if user.is_staff or user.is_superuser %}
     <div class="d-flex gap-2 mt-3 mt-md-0">
         <a href="{% url 'subject_update' pk=subject.pk %}" class="btn btn-warning text-white">
             <i class="fa-solid fa-pen-to-square me-1"></i> แก้ไขข้อมูล
@@ -92,7 +92,7 @@
                     <a href="{% url 'subject_list' %}" class="btn btn-secondary">
                         <i class="fa-solid fa-arrow-left me-1"></i> กลับหน้ารายการ
                     </a>
-                    {% if user.is_authenticated %}
+                    {% if user.is_staff or user.is_superuser %}
                     <div class="d-flex gap-2">
                         <a href="{% url 'subject_update' pk=subject.pk %}" class="btn btn-warning text-white">
                             <i class="fa-solid fa-pen-to-square me-1"></i> แก้ไขข้อมูล
@@ -118,8 +118,8 @@
                 </span>
             </div>
 
-            <!-- Add Student to Subject Form for Authenticated Users -->
-            {% if user.is_authenticated %}
+            <!-- Add Student to Subject Form for Staff/Admin -->
+            {% if user.is_staff or user.is_superuser %}
             <div class="p-4 bg-light border-bottom">
                 <h6 class="fw-bold text-dark mb-3 d-flex align-items-center gap-2">
                     <i class="fa-solid fa-user-plus text-primary"></i> เพิ่มนักศึกษาลงทะเบียนวิชานี้
@@ -176,7 +176,7 @@
                                 <th style="width: 15%">รหัสนักศึกษา</th>
                                 <th style="width: 30%">นักศึกษา (รูป & ชื่อ-สกุล)</th>
                                 <th style="width: 28%">สาขาวิชา (Major)</th>
-                                {% if user.is_authenticated %}
+                                {% if user.is_staff or user.is_superuser %}
                                 <th class="text-center" style="width: 10%">ถอนรายวิชา</th>
                                 {% endif %}
                             </tr>
@@ -231,7 +231,7 @@
                                         <i class="fa-solid fa-tag me-1"></i>{{ enroll.student.major.major_name|default:enroll.student.major }}
                                     </span>
                                 </td>
-                                {% if user.is_authenticated %}
+                                {% if user.is_staff or user.is_superuser %}
                                 <td class="text-center">
                                     <form method="post" action="{% url 'enroll_delete' pk=enroll.pk %}" onsubmit="return confirm('คุณต้องการถอนนักศึกษา {{ enroll.student.fname }} {{ enroll.student.lname }} ออกจากวิชานี้ใช่หรือไม่?');" class="d-inline">
                                         {% csrf_token %}
@@ -252,10 +252,10 @@
                     <i class="fa-solid fa-users text-muted mb-3 fs-1 opacity-50"></i>
                     <h5 class="fw-bold text-dark mb-1">ยังไม่มีนักศึกษาลงทะเบียนในวิชานี้</h5>
                     <p class="text-muted small mb-0">
-                        {% if user.is_authenticated %}
+                        {% if user.is_staff or user.is_superuser %}
                             เลือกนักศึกษาและภาคเรียนด้านบนเพื่อบันทึกการลงทะเบียน
                         {% else %}
-                            เข้าสู่ระบบเพื่อจัดการการลงทะเบียนของนักศึกษา
+                            เข้าสู่ระบบด้วยบัญชีผู้ดูแลระบบเพื่อจัดการการลงทะเบียนของนักศึกษา
                         {% endif %}
                     </p>
                 </div>

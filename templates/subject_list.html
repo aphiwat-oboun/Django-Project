@@ -18,7 +18,7 @@
         </h2>
         <p class="text-muted small m-0">โครงสร้างหลักสูตรรายวิชา หมวดหมู่วิชา และการจัดการหลักสูตร</p>
     </div>
-    {% if user.is_authenticated %}
+    {% if user.is_staff or user.is_superuser %}
     <div class="mt-3 mt-md-0">
         <a href="{% url 'subject_create' %}" class="btn btn-primary shadow-sm">
             <i class="fa-solid fa-plus me-1"></i>
@@ -153,21 +153,21 @@
                                 <i class="fa-solid fa-tag me-1"></i>{{ subject.category.category_name }}
                             </span>
                         </td>
-                        {% if user.is_authenticated %}
                         <td class="text-center">
                             <div class="d-inline-flex gap-1">
                                 <a href="{% url 'subject_detail' pk=subject.pk %}" class="action-btn btn-view" title="ดูรายละเอียด">
                                     <i class="fa-solid fa-eye"></i>
                                 </a>
+                                {% if user.is_staff or user.is_superuser %}
                                 <a href="{% url 'subject_update' pk=subject.pk %}" class="action-btn btn-edit" title="แก้ไขข้อมูล">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
                                 <a href="{% url 'subject_delete' pk=subject.pk %}" class="action-btn btn-delete" title="ลบข้อมูล">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </a>
+                                {% endif %}
                             </div>
                         </td>
-                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -179,10 +179,11 @@
             <div class="text-muted small">
                 {% if page_obj %}
                     แสดง <strong>{{ page_obj.start_index }}</strong> ถึง <strong>{{ page_obj.end_index }}</strong> จากทั้งหมด <strong>{{ paginator.count }}</strong> รายการ
+                </div>
                 {% else %}
                     แสดง <strong>1</strong> ถึง <strong>{{ subjects|length }}</strong> จากทั้งหมด <strong>{{ subjects|length }}</strong> รายการ
+                </div>
                 {% endif %}
-            </div>
 
             {% if page_obj and page_obj.has_other_pages %}
             <nav aria-label="Page navigation">
@@ -228,7 +229,7 @@
             <i class="fa-solid fa-book-open text-muted mb-3 fs-1"></i>
             <h5 class="fw-bold text-dark mb-1">ไม่พบข้อมูลรายวิชาในระบบ</h5>
             <p class="text-muted small mb-4">เริ่มต้นด้วยการเพิ่มข้อมูลรายวิชาแรกเข้าสู่ระบบหลักสูตร</p>
-            {% if user.is_authenticated %}
+            {% if user.is_staff or user.is_superuser %}
             <a href="{% url 'subject_create' %}" class="btn btn-primary">
                 <i class="fa-solid fa-plus me-1"></i> เพิ่มรายวิชาใหม่
             </a>
