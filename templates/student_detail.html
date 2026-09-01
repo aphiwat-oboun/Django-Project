@@ -207,9 +207,23 @@
                             <tr>
                                 <td class="text-center text-muted fw-bold">{{ forloop.counter }}</td>
                                 <td>
-                                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2.5 py-1.5 rounded-pill font-monospace fw-semibold">
-                                        <i class="fa-solid fa-calendar-check me-1"></i>{{ enroll.semester }}
-                                    </span>
+                                    {% if "1/" in enroll.semester %}
+                                        <span class="semester-badge semester-badge-1">
+                                            <i class="fa-solid fa-calendar-check"></i> {{ enroll.semester }}
+                                        </span>
+                                    {% elif "2/" in enroll.semester %}
+                                        <span class="semester-badge semester-badge-2">
+                                            <i class="fa-solid fa-calendar-check"></i> {{ enroll.semester }}
+                                        </span>
+                                    {% elif "3/" in enroll.semester %}
+                                        <span class="semester-badge semester-badge-3">
+                                            <i class="fa-solid fa-sun"></i> {{ enroll.semester }}
+                                        </span>
+                                    {% else %}
+                                        <span class="semester-badge semester-badge-default">
+                                            <i class="fa-solid fa-calendar-days"></i> {{ enroll.semester }}
+                                        </span>
+                                    {% endif %}
                                 </td>
                                 <td>
                                     <a href="{% url 'subject_detail' pk=enroll.subject.pk %}" class="stu-id-badge text-decoration-none">

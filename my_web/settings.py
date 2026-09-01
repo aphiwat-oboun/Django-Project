@@ -22,9 +22,9 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load environment variables (.env.local, .env, or system env)
-load_dotenv(BASE_DIR / ".env.local")
-load_dotenv(BASE_DIR / ".env")
-load_dotenv()
+load_dotenv(BASE_DIR / ".env.local", override=True)
+load_dotenv(BASE_DIR / ".env", override=True)
+load_dotenv(override=True)
 
 
 # Quick-start development settings - unsuitable for production
@@ -136,3 +136,13 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "statics"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# OAuth 2.0 Social Login Settings
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID", "").strip()
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET", "").strip()
+
+LINE_CHANNEL_ID = os.getenv("LINE_CHANNEL_ID", "").strip()
+LINE_CHANNEL_SECRET = os.getenv("LINE_CHANNEL_SECRET", "").strip()
+
+GITHUB_CLIENT_ID = os.getenv("GITHUB_CLIENT_ID", "").strip()
+GITHUB_CLIENT_SECRET = os.getenv("GITHUB_CLIENT_SECRET", "").strip()

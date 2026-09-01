@@ -6,11 +6,12 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('contact/', views.contact, name='contact'),
 
-    # Authentication & Social Login URLs
+    # Authentication & OAuth 2.0 Social Login (Google, LINE, GitHub)
     path('login/', views.login_view, name='login'),
     path('register/', views.register_view, name='register'),
-    path('social-login/<str:provider>/', views.social_login_view, name='social_login'),
     path('logout/', views.logout_view, name='logout'),
+    path('oauth/<str:provider>/', views.social_login_view, name='social_login'),
+    path('oauth/callback/<str:provider>/', views.social_callback_view, name='social_callback'),
 
     # Student CRUD URLs
     path('students/create/', views.student_create, name='student_create'),

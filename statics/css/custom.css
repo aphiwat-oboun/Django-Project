@@ -46,6 +46,85 @@ body {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* Modern Navbar Search Bar */
+.navbar-search-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 50px;
+    padding: 3px 4px 3px 14px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    width: 270px;
+}
+
+.navbar-search-box:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(129, 140, 248, 0.5);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.navbar-search-box:focus-within {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: #818cf8;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25), 0 8px 20px rgba(0, 0, 0, 0.25);
+    width: 320px;
+}
+
+.navbar-search-box .search-icon {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    margin-right: 8px;
+    transition: color 0.2s ease;
+    pointer-events: none;
+}
+
+.navbar-search-box:focus-within .search-icon {
+    color: #818cf8;
+}
+
+.navbar-search-box .search-input {
+    background: transparent !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-size: 0.875rem !important;
+    padding: 0.35rem 0.25rem !important;
+    box-shadow: none !important;
+    outline: none !important;
+    width: 100%;
+}
+
+.navbar-search-box .search-input::placeholder {
+    color: #94a3b8 !important;
+    font-size: 0.825rem;
+}
+
+.navbar-search-box .search-submit-btn {
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    border: none;
+    color: #ffffff;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.35);
+}
+
+.navbar-search-box .search-submit-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.5);
+    background: linear-gradient(135deg, #4338ca 0%, #4f46e5 100%);
+}
+
 .sb-topnav .navbar-brand {
     font-weight: 700;
     font-size: 1.25rem;
@@ -53,6 +132,62 @@ body {
     background: linear-gradient(135deg, #ffffff 0%, #c7d2fe 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+/* Semester Badges (Distinct colors per semester, clear & readable) */
+.semester-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    font-size: 0.925rem;
+    font-weight: 700;
+    border-radius: 50px;
+    letter-spacing: 0.02em;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    white-space: nowrap;
+    transition: transform 0.15s ease;
+}
+
+.semester-badge:hover {
+    transform: scale(1.04);
+}
+
+/* ภาคเรียนที่ 1 - Indigo / Blue */
+.semester-badge-1 {
+    background: #e0e7ff;
+    color: #3730a3;
+    border: 1.5px solid #c7d2fe;
+}
+.semester-badge-1 i {
+    color: #4f46e5;
+}
+
+/* ภาคเรียนที่ 2 - Emerald / Green */
+.semester-badge-2 {
+    background: #dcfce7;
+    color: #166534;
+    border: 1.5px solid #bbf7d0;
+}
+.semester-badge-2 i {
+    color: #16a34a;
+}
+
+/* ภาคเรียนที่ 3 (ฤดูร้อน) - Amber / Orange */
+.semester-badge-3 {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1.5px solid #fde68a;
+}
+.semester-badge-3 i {
+    color: #d97706;
+}
+
+/* Default / Other */
+.semester-badge-default {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1.5px solid #cbd5e1;
 }
 
 .sb-sidenav-dark {
