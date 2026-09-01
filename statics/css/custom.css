@@ -134,6 +134,62 @@ body {
     -webkit-text-fill-color: transparent;
 }
 
+/* Semester Badges (Distinct colors per semester, clear & readable) */
+.semester-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    font-size: 0.925rem;
+    font-weight: 700;
+    border-radius: 50px;
+    letter-spacing: 0.02em;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    white-space: nowrap;
+    transition: transform 0.15s ease;
+}
+
+.semester-badge:hover {
+    transform: scale(1.04);
+}
+
+/* ภาคเรียนที่ 1 - Indigo / Blue */
+.semester-badge-1 {
+    background: #e0e7ff;
+    color: #3730a3;
+    border: 1.5px solid #c7d2fe;
+}
+.semester-badge-1 i {
+    color: #4f46e5;
+}
+
+/* ภาคเรียนที่ 2 - Emerald / Green */
+.semester-badge-2 {
+    background: #dcfce7;
+    color: #166534;
+    border: 1.5px solid #bbf7d0;
+}
+.semester-badge-2 i {
+    color: #16a34a;
+}
+
+/* ภาคเรียนที่ 3 (ฤดูร้อน) - Amber / Orange */
+.semester-badge-3 {
+    background: #fef3c7;
+    color: #92400e;
+    border: 1.5px solid #fde68a;
+}
+.semester-badge-3 i {
+    color: #d97706;
+}
+
+/* Default / Other */
+.semester-badge-default {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1.5px solid #cbd5e1;
+}
+
 .sb-sidenav-dark {
     background: #0f172a !important;
     border-right: 1px solid rgba(255, 255, 255, 0.05);

@@ -278,12 +278,12 @@
                 </div>
 
                 <!-- Password Field -->
-                <div class="mb-2.5">
+                <div class="mb-3">
                     <label for="{{ form.password.id_for_label }}" class="form-label text-slate-700 fw-semibold mb-1" style="font-size: 0.825rem;">
                         รหัสผ่าน (Password)
                     </label>
                     <div class="auth-input-container">
-                        <input type="password" name="password" id="id_password_input" class="form-control pe-5" placeholder="กรอกรหัสผ่าน" required>
+                        <input type="password" name="password" id="id_password_input" class="form-control pe-5" placeholder="กรอกรหัสผ่าน" required autocomplete="current-password">
                         <i class="fa-solid fa-key auth-input-icon"></i>
                         <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('id_password_input', this)" title="แสดง/ซ่อนรหัสผ่าน">
                             <i class="fa-solid fa-eye"></i>
@@ -292,7 +292,7 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="btn-auth-submit">
+                <button type="submit" class="btn-auth-submit mt-3 mb-1">
                     <span>เข้าสู่ระบบ</span>
                     <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
