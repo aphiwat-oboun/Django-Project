@@ -22,9 +22,9 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Load environment variables (.env.local, .env, or system env)
-load_dotenv(BASE_DIR / ".env.local")
-load_dotenv(BASE_DIR / ".env")
-load_dotenv()
+load_dotenv(BASE_DIR / ".env.local", override=True)
+load_dotenv(BASE_DIR / ".env", override=True)
+load_dotenv(override=True)
 
 
 # Quick-start development settings - unsuitable for production

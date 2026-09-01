@@ -391,76 +391,60 @@ def register_view(request):
 # ---------------- Real OAuth 2.0 Social Login Flows ----------------
 def social_login_view(request, provider):
     """
-    Handles OAuth 2.0 redirection for Google, LINE, and GitHub.
-    Uses credentials from .env.local if present, or provides clean simulation fallback.
+    Handles real OAuth 2.0 redirection for Google, LINE, and GitHub.
+    Requires valid credentials configured in .env.local.
     """
     provider = provider.lower()
     
     if provider == "google":
-        client_id = getattr(settings, "GOOGLE_CLIENT_ID", "")
-        if client_id:
-            callback_uri = request.build_absolute_uri(reverse("social_callback", kwargs={"provider": "google"}))
-            auth_url = (
-                f"https://accounts.google.com/o/oauth2/v2/auth"
-                f"?client_id={client_id}"
-                f"&redirect_uri={callback_uri}"
-                f"&response_type=code"
-                f"&scope=openid%20email%20profile"
-                f"&access_type=offline"
-                f"&prompt=consent"
-            )
-            return redirect(auth_url)
-        else:
-            # Simulation fallback when API keys not yet filled in .env.local
-            user, created = User.objects.get_or_create(
-                username="google_user",
-                defaults={"email": "google_student@university.ac.th", "first_name": "Google", "last_name": "Student"}
-            )
-            login(request, user)
-            messages.success(request, "เข้าสู่ระบบด้วย Google Account สำเร็จ (กำหนด GOOGLE_CLIENT_ID ใน .env.local เพื่อใช้ Google จริง)")
-            return redirect("home")
+        client_id = getattr(settings, "GOOGLE_CLIENT_ID", "").strip()
+        if not client_id:
+            messages.error(request, "ยังไม่ได้กำหนด GOOGLE_CLIENT_ID ในไฟล์ .env.local")
+            return redirect("login")
+        
+        callback_uri = request.build_absolute_uri(reverse("social_callback", kwargs={"provider": "google"}))
+        auth_url = (
+            f"https://accounts.google.com/o/oauth2/v2/auth"
+            f"?client_id={client_id}"
+            f"&redirect_uri={callback_uri}"
+            f"&response_type=code"
+            f"&scope=openid%20email%20profile"
+            f"&access_type=offline"
+            f"&prompt=consent"
+        )
+        return redirect(auth_url)
 
     elif provider == "line":
-        channel_id = getattr(settings, "LINE_CHANNEL_ID", "")
-        if channel_id:
-            callback_uri = request.build_absolute_uri(reverse("social_callback", kwargs={"provider": "line"}))
-            auth_url = (
-                f"https://access.line.me/oauth2/v2.1/authorize"
-                f"?response_type=code"
-                f"&client_id={channel_id}"
-                f"&redirect_uri={callback_uri}"
-                f"&state=line_auth_state"
-                f"&scope=profile%20openid%20email"
-            )
-            return redirect(auth_url)
-        else:
-            user, created = User.objects.get_or_create(
-                username="line_user",
-                defaults={"email": "line_student@line.me", "first_name": "LINE", "last_name": "User"}
-            )
-            login(request, user)
-            messages.success(request, "เข้าสู่ระบบด้วย LINE สำเร็จ (กำหนด LINE_CHANNEL_ID ใน .env.local เพื่อใช้ LINE จริง)")
-            return redirect("home")
+        channel_id = getattr(settings, "LINE_CHANNEL_ID", "").strip()
+        if not channel_id:
+            messages.error(request, "ยังไม่ได้กำหนด LINE_CHANNEL_ID ในไฟล์ .env.local")
+            return redirect("login")
+        
+        callback_uri = request.build_absolute_uri(reverse("social_callback", kwargs={"provider": "line"}))
+        auth_url = (
+            f"https://access.line.me/oauth2/v2.1/authorize"
+            f"?response_type=code"
+            f"&client_id={channel_id}"
+            f"&redirect_uri={callback_uri}"
+            f"&state=line_auth_state"
+            f"&scope=profile%20openid%20email"
+        )
+        return redirect(auth_url)
 
     elif provider == "github":
-        client_id = getattr(settings, "GITHUB_CLIENT_ID", "")
-        if client_id:
-            callback_uri = request.build_absolute_uri(reverse("social_callback", kwargs={"provider": "github"}))
-            auth_url = (
-                f"https://github.com/login/oauth/authorize"
-                f"?client_id={client_id}"
-                f"&redirect_uri={callback_uri}"
-                f"&scope=user:email"
-            )
-            return redirect(auth_url)
-        else:
-            user, created = User.objects.get_or_create(
-                username="github_user",
-                defaults={"email": "developer@github.com", "first_name": "GitHub", "last_name": "Developer"}
-            )
-            login(request, user)
-            messages.success(request, "เข้าสู่ระบบด้วย GitHub สำเร็จ (กำหนด GITHUB_CLIENT_ID ใน .env.local เพื่อใช้ GitHub จริง)")
-            return redirect("home")
+        client_id = getattr(settings, "GITHUB_CLIENT_ID", "").strip()
+        if not client_id:
+            messages.error(request, "ยังไม่ได้กำหนด GITHUB_CLIENT_ID ในไฟล์ .env.local")
+            return redirect("login")
+        
+        callback_uri = request.build_absolute_uri(reverse("social_callback", kwargs={"provider": "github"}))
+        auth_url = (
+            f"https://github.com/login/oauth/authorize"
+            f"?client_id={client_id}"
+            f"&redirect_uri={callback_uri}"
+            f"&scope=user:email"
+        )
+        return redirect(auth_url)
 
     else:
         messages.error(request, "ไม่พบผู้ให้บริการล็อกอินนี้")
