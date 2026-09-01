@@ -278,7 +278,7 @@
                         ชื่อผู้ใช้งาน (Username) <span class="text-danger">*</span>
                     </label>
                     <div class="auth-input-container">
-                        <input type="text" name="username" class="form-control" placeholder="เช่น student_dev" autofocus required id="{{ form.username.id_for_label }}" value="{{ form.username.value|default:'' }}">
+                        <input type="text" name="username" class="form-control" placeholder="เช่น student_dev" autofocus required id="{{ form.username.id_for_label }}" value="{{ form.username.value|default:'' }}" autocomplete="off">
                         <i class="fa-solid fa-user auth-input-icon"></i>
                     </div>
                     {% if form.username.errors %}
@@ -294,7 +294,7 @@
                         อีเมล (Email)
                     </label>
                     <div class="auth-input-container">
-                        <input type="email" name="email" class="form-control" placeholder="example@university.ac.th" id="{{ form.email.id_for_label }}" value="{{ form.email.value|default:'' }}">
+                        <input type="email" name="email" class="form-control" placeholder="example@university.ac.th" id="{{ form.email.id_for_label }}" value="{{ form.email.value|default:'' }}" autocomplete="off">
                         <i class="fa-solid fa-envelope auth-input-icon"></i>
                     </div>
                     {% if form.email.errors %}
@@ -311,7 +311,7 @@
                             รหัสผ่าน (Password) <span class="text-danger">*</span>
                         </label>
                         <div class="auth-input-container">
-                            <input type="password" name="password" id="id_password_reg" class="form-control pe-5" placeholder="กำหนดรหัสผ่าน" required>
+                            <input type="password" name="password" id="id_password_reg" class="form-control pe-5" placeholder="กำหนดรหัสผ่าน" required autocomplete="new-password">
                             <i class="fa-solid fa-lock auth-input-icon"></i>
                             <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('id_password_reg', this)" title="แสดง/ซ่อนรหัสผ่าน">
                                 <i class="fa-solid fa-eye"></i>
@@ -330,7 +330,7 @@
                             ยืนยันรหัสผ่าน <span class="text-danger">*</span>
                         </label>
                         <div class="auth-input-container">
-                            <input type="password" name="confirm_password" id="id_confirm_password_reg" class="form-control pe-5" placeholder="ยืนยันรหัสผ่าน" required>
+                            <input type="password" name="confirm_password" id="id_confirm_password_reg" class="form-control pe-5" placeholder="ยืนยันรหัสผ่าน" required autocomplete="new-password">
                             <i class="fa-solid fa-shield-halved auth-input-icon"></i>
                             <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('id_confirm_password_reg', this)" title="แสดง/ซ่อนรหัสผ่าน">
                                 <i class="fa-solid fa-eye"></i>
