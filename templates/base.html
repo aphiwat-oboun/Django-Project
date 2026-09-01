@@ -15,26 +15,32 @@
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         <script src="https://use.fontawesome.com/releases/v6.4.0/js/all.js" crossorigin="anonymous"></script>
 
+        <!-- Favicon -->
+        <link rel="icon" type="image/png" href="{% static 'assets/img/logo.png' %}">
+
         <!-- Base Stylesheet -->
         <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
         <!-- Custom Modern Design System -->
-        <link href="{% static 'css/custom.css' %}" rel="stylesheet" />
+        <link href="{% static 'css/custom.css' %}?v=1.2" rel="stylesheet" />
     </head>
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark">
             <!-- Navbar Brand-->
             <a class="navbar-brand ps-3 d-flex align-items-center gap-2" href="{% url 'home' %}">
-                <i class="fa-solid fa-graduation-cap" style="color: #818cf8;"></i>
+                <img src="{% static 'assets/img/logo.png' %}" alt="Logo" width="28" height="28" class="rounded object-fit-cover">
                 <span>Aphiwat Obaun</span>
             </a>
             <!-- Sidebar Toggle-->
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0 text-light" id="sidebarToggle" href="#!"><i class="fas fa-bars-staggered"></i></button>
             
-            <!-- Navbar Search-->
+            <!-- Navbar Search (Modern Glassmorphic Pill) -->
             <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" action="{% if 'subject' in request.path %}{% url 'subject_list' %}{% else %}{% url 'home' %}{% endif %}" method="get">
-                <div class="input-group">
-                    <input class="form-control form-control-sm" type="text" name="q" placeholder="ค้นหารหัส / ชื่อ..." aria-label="Search" value="{{ search_query|default:'' }}" />
-                    <button class="btn btn-primary btn-sm" type="submit"><i class="fas fa-search"></i></button>
+                <div class="navbar-search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input class="search-input" type="text" name="q" placeholder="ค้นหารหัส / ชื่อ..." aria-label="Search" value="{{ search_query|default:'' }}" />
+                    <button class="search-submit-btn" type="submit" title="ค้นหา">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
                 </div>
             </form>
             
