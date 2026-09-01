@@ -278,7 +278,7 @@
                         ชื่อผู้ใช้งาน (Username) <span class="text-danger">*</span>
                     </label>
                     <div class="auth-input-container">
-                        <input type="text" name="username" class="form-control" placeholder="เช่น student_dev" autofocus required id="{{ form.username.id_for_label }}" value="{{ form.username.value|default:'' }}">
+                        <input type="text" name="username" class="form-control" placeholder="เช่น student_dev" autofocus required id="{{ form.username.id_for_label }}" value="{{ form.username.value|default:'' }}" autocomplete="off">
                         <i class="fa-solid fa-user auth-input-icon"></i>
                     </div>
                     {% if form.username.errors %}
@@ -294,7 +294,7 @@
                         อีเมล (Email)
                     </label>
                     <div class="auth-input-container">
-                        <input type="email" name="email" class="form-control" placeholder="example@university.ac.th" id="{{ form.email.id_for_label }}" value="{{ form.email.value|default:'' }}">
+                        <input type="email" name="email" class="form-control" placeholder="example@university.ac.th" id="{{ form.email.id_for_label }}" value="{{ form.email.value|default:'' }}" autocomplete="off">
                         <i class="fa-solid fa-envelope auth-input-icon"></i>
                     </div>
                     {% if form.email.errors %}
@@ -311,7 +311,7 @@
                             รหัสผ่าน (Password) <span class="text-danger">*</span>
                         </label>
                         <div class="auth-input-container">
-                            <input type="password" name="password" id="id_password_reg" class="form-control pe-5" placeholder="กำหนดรหัสผ่าน" required>
+                            <input type="password" name="password" id="id_password_reg" class="form-control pe-5" placeholder="กำหนดรหัสผ่าน" required autocomplete="new-password">
                             <i class="fa-solid fa-lock auth-input-icon"></i>
                             <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('id_password_reg', this)" title="แสดง/ซ่อนรหัสผ่าน">
                                 <i class="fa-solid fa-eye"></i>
@@ -330,7 +330,7 @@
                             ยืนยันรหัสผ่าน <span class="text-danger">*</span>
                         </label>
                         <div class="auth-input-container">
-                            <input type="password" name="confirm_password" id="id_confirm_password_reg" class="form-control pe-5" placeholder="ยืนยันรหัสผ่าน" required>
+                            <input type="password" name="confirm_password" id="id_confirm_password_reg" class="form-control pe-5" placeholder="ยืนยันรหัสผ่าน" required autocomplete="new-password">
                             <i class="fa-solid fa-shield-halved auth-input-icon"></i>
                             <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('id_confirm_password_reg', this)" title="แสดง/ซ่อนรหัสผ่าน">
                                 <i class="fa-solid fa-eye"></i>
@@ -345,46 +345,17 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="btn-auth-submit">
+                <button type="submit" class="btn-auth-submit mt-3 mb-3">
                     <span>ยืนยันการสมัครสมาชิก</span>
                     <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
 
-            <div class="auth-divider-line">หรือสมัครด้วย OAuth 2.0</div>
-
-            <!-- Social Sign Up Buttons (Google, LINE, GitHub) -->
-            <div class="d-grid gap-2 mb-2">
-                <a href="{% url 'social_login' provider='google' %}" class="btn-social-auth btn-social-google">
-                    <svg width="16" height="16" viewBox="0 0 48 48">
-                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.55 10.78l7.98-6.19z"/>
-                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                    </svg>
-                    <span>สมัครสมาชิกด้วย Google</span>
-                </a>
-                <div class="row g-2">
-                    <div class="col-6">
-                        <a href="{% url 'social_login' provider='line' %}" class="btn-social-auth btn-social-line w-100">
-                            <i class="fa-brands fa-line fs-6"></i>
-                            <span>LINE</span>
-                        </a>
-                    </div>
-                    <div class="col-6">
-                        <a href="{% url 'social_login' provider='github' %}" class="btn-social-auth btn-social-github w-100">
-                            <i class="fa-brands fa-github fs-6"></i>
-                            <span>GitHub</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
             <!-- Login Link -->
-            <div class="text-center pt-2 border-top">
-                <span class="text-muted" style="font-size: 0.8rem;">มีบัญชีผู้ใช้งานอยู่แล้ว?</span>
-                <a href="{% url 'login' %}" class="fw-bold text-primary text-decoration-none ms-1" style="font-size: 0.8rem;">
-                    เข้าสู่ระบบที่นี่
+            <div class="text-center pt-3 border-top">
+                <p class="text-muted mb-1" style="font-size: 0.825rem;">มีบัญชีอยู่แล้ว หรือต้องการเข้าสู่ระบบด้วย Google / LINE / GitHub?</p>
+                <a href="{% url 'login' %}" class="fw-bold text-primary text-decoration-none" style="font-size: 0.875rem;">
+                    <i class="fa-solid fa-right-to-bracket me-1"></i>ไปที่หน้าเข้าสู่ระบบ
                 </a>
             </div>
         </div>
